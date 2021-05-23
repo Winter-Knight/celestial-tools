@@ -1,0 +1,35 @@
+#version 400 core
+
+layout(quads, ccw, equal_spacing) in;
+
+in vec3 pos_worldspace[];
+in float size[];
+in float tilt[];
+
+out vec2 uv;
+out vec3 normal_worldspace;
+out vec3 sundir_worldspace;
+
+uniform mat4 VP;
+uniform mat4 Rotations;
+uniform mat4 Translation;
+
+const float PI = 3.14159;
+
+void main()
+{
+	float tilt = 45.0 * PI / 180.0;
+	
+	float verticalAngle = PI * (gl_TessCoord.x - 0.5); // -PI/2 to PI/2
+	float horizontalAngle = 2 * PI * gl_TessCoord.y; // 0 to 2PI
+
+	vec3 pos = vec3(cos(verticalAngle) * cos(horizontalAngle), sin(verticalAngle),
+		cos(verticalAngle) * sin(horizontalAngle)) * size[0];
+
+	vec4 rotated_pos = Rotations * vec4(pos, 1.0);
+	normal_worldspace = rotated_pos.xyz;
+	sundir_worldspace = -vec3(Translation[3][0], Translation[3][1], Translation[3][2]);
+
+	gl_Position = VP * Translation * rotated_pos;
+	uv = vec2(gl_TessCoord.x, gl_TessCoord.y);
+}
