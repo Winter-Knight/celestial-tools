@@ -1,0 +1,56 @@
+[Celestial]
+Name: Sun
+Position: 0 0 0
+Size: 6.960
+Shader: shaders/sun.frag
+
+[Orbital]
+Name: Mario
+Distance: 778
+Period: 8760
+Tilt: 45
+Size: 0.069911
+Orbits: 0 #Sun
+Texture: images/gas_giant_lookup1.png
+Shader: shaders/gas.frag
+
+[Orbital]
+Name: Shadow
+Distance: 0.4218
+Eccentricity: 0.0041
+Period: 0.008333
+Size: 0.036306
+Orbits: 1
+Texture: images/callisto_4k_map_by_jcpag2010_dc4fjip.png
+Shader: shaders/shadow.frag
+
+[Orbital]
+Name: Rosa
+Distance: 0.6711
+Eccentricity: 0.0094
+Period: 0.016666
+Size: 0.031216
+Orbits: 1
+Shader: shaders/rosa.frag
+
+[Orbital]
+Name: Daisy
+Distance: 1.0704
+Eccentricity: 0.0011
+Period: 0.033332
+Period-Offset: 0.008333
+Tilt: 50
+Rotation-Period: 0.0002777
+Size: 0.052682
+Orbits: 1
+Texture: images/io_rgb_cyl.png
+Shader: shaders/daisy.frag
+
+
+[Camera]
+Position: 778 0 1.5
+Direction: 0 0 -1
+Up: 0 1 0
+FOV: 60
+Near: 0.001
+Far: 10000

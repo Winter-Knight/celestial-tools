@@ -10,7 +10,7 @@
 class World {
 public:
 	World(Window * w, InputHandler * i) { window = w; input = i; }
-	void Init();
+	void Init(const char * systemFile);
 	void Play();
 
 private:
@@ -19,6 +19,9 @@ private:
 
 	Camera * camera;
 	Skybox * skybox;
+
+	std::vector<Celestial *> celestials;
+
 	Celestial * sun;
 	Orbital * planet;
 	Orbital * rosa, * shadow, * daisy;

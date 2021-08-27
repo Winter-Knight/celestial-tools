@@ -1,5 +1,5 @@
 BIN = celestial
-SOURCE_FILES= main.cpp window.cpp input.cpp texture.cpp world.cpp camera.cpp celestial.cpp skybox.cpp
+SOURCE_FILES= main.cpp window.cpp input.cpp texture.cpp world.cpp camera.cpp celestial.cpp skybox.cpp parser.cpp
 HEADERS = $(shell ls *.h)
 
 CXX = g++
