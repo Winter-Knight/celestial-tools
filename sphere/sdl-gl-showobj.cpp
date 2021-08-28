@@ -100,25 +100,28 @@ int CheckGLProgram(GLuint program, const char * str = "")
 
 const char * LoadModel(Mesh * model)
 {
-	Sphere sphere1;
-	sphere1.Init();
+	unsigned int i, j;
 	
-	Sphere sphere2 = sphere1.Quadruple();
-	Sphere sphere3 = sphere2.Quadruple();
-	
-	static Sphere sphere = sphere3.Quadruple();
-	
+	Sphere sphere1, sphere2;
+	sphere1.InitOctahedron();
+	for (i = 0; i < 3; i++) {
+		if (i % 2 == 0)
+			sphere2 = sphere1.Quadruple();
+		else
+			sphere1 = sphere2.Quadruple();
+	}
+	static Sphere sphere = (i % 2 == 0) ? sphere1.Quadruple() : sphere2.Quadruple();
+
 	model->vertices = sphere.vertices.data();
 	model->numVertices = sphere.vertices.size();
-	
-	unsigned int i, j;
+
 	for (i = 0; i < sphere.faces.size(); i++) {
 		glm::uvec3 face = sphere.faces[i];
 		for (j = 0; j < 3; j++)
 			model->indices.push_back(face[j]);
 	}
 	model->numIndices = i * j;
-	
+
 	return NULL;
 }
 
@@ -189,7 +192,7 @@ void init()
 	CheckGLError("init begin");
 	
 	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
-//	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 
 	GLuint vertexarray;
@@ -203,7 +206,7 @@ void init()
 	}
 	
 	printf("numVertices: %d\n", mesh.numVertices);
-	printf("numIndices: %d\n", mesh.numIndices);
+	printf("numFaces: %d\n", mesh.numIndices / 3);
 	
 	GLuint vertexBuffer;
 	glGenBuffers(1, &vertexBuffer);
@@ -218,7 +221,7 @@ void init()
 	GLuint indexBuffer;
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.numIndices * sizeof(unsigned short), &mesh.indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh.numIndices * sizeof(unsigned short), mesh.indices.data(), GL_STATIC_DRAW);
 
 	// MVPHandler+
 	mvphandler.model = glm::mat4(1.0f);
