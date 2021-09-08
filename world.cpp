@@ -12,14 +12,16 @@ void World::Init(const char * systemFile)
 	camera->aspect = float(width) / float(height);
 	camera->CalculatePerspective();
 
-	printf("width: %d, height: %d, aspect: %f\n", width, height, camera->aspect);
-
 	// Setup skybox
 	skybox = new Skybox();
 	skybox->dirName = "images/starry-sky";
 	skybox->Init();
 	skybox->program = new GLProgram("shaders/skybox.vert", "shaders/skybox.frag");
+	
+	// OpenGL Sphere
+	Celestial::sphere.Init(4);
 
+	// Load celestial objects
 	parseSystemFile(celestials, systemFile);
 }
 

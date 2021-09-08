@@ -9,10 +9,10 @@
 #include "camera.h"
 #include "texture.h"
 #include "input.h"
+#include "glsphere.h"
 
 class Celestial {
 public:
-	virtual void Init();
 	virtual void Update(InputHandler * input, float time) {}
 	virtual void Draw(Camera * camera);
 	virtual void AddTexture(const char * filename);
@@ -24,10 +24,10 @@ public:
 	float rotation_period = 0.0f; // In hours
 	float tilt = 0.0f; // In degrees
 
-	GLuint vertexArray;
-	GLuint vertexBuffer;
 	std::vector<Texture> textures;
 	GLProgram * program;
+	
+	static GLSphere sphere;
 };
 
 

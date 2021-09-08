@@ -1,6 +1,7 @@
 #version 330 core
 
-in vec2 uv;
+//in vec2 uv;
+in vec3 uv;
 in vec3 normal_worldspace;
 in vec3 sundir_worldspace;
 

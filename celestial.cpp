@@ -2,25 +2,6 @@
 
 #include "../gl-debug.h"
 
-void Celestial::Init()
-{
-	glGenVertexArrays(1, &vertexArray);
-	glBindVertexArray(vertexArray);
-	
-	glGenBuffers(1, &vertexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &pos, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void *) 0);
-	
-	GLuint sizeBuffer;
-	glGenBuffers(1, &sizeBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, sizeBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float), &size, GL_STATIC_DRAW);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 0, (void *) 0);
-}
-
 void Orbital::Update(InputHandler * input, float time)
 {
 	if (input->paused)
@@ -56,9 +37,6 @@ void Orbital::Update(InputHandler * input, float time)
 //	printf("Orbital location: [%5.2f][%5.2f][%5.2f]\n", pos.x, pos.y, pos.z);
 	if (rotation_period)
 		rotation = time / rotation_period * 2 * glm::pi<float>();
-
-	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3), &pos, GL_STATIC_DRAW);
 }
 
 void Celestial::AddTexture(const char * filename)
@@ -70,7 +48,7 @@ void Celestial::AddTexture(const char * filename)
 
 void Celestial::Draw(Camera * camera)
 {
-	glBindVertexArray(vertexArray);
+	sphere.Bind();
 	
 	program->Use();
 	glm::mat4 R1 = glm::rotate(glm::mat4(1.0f), glm::radians(tilt), glm::vec3(0.0f, 0.0f, -1.0f));
@@ -82,9 +60,14 @@ void Celestial::Draw(Camera * camera)
 	program->SetUniformMatrix4f("VP", &VP[0][0]);
 	program->SetUniformMatrix4f("Rotations", &Rotations[0][0]);
 	program->SetUniformMatrix4f("Translation", &T[0][0]);
+	
+	program->SetUniform3f("centerPos_worldspace", &pos[0]);
+	program->SetUniformf("size", size);
 
 	for (unsigned int i = 0; i < textures.size(); i++)
 		textures[i].Bind(program, i);
 
-	glDrawArrays(GL_PATCHES, 0, 1);
+	glDrawElements(GL_TRIANGLES, sphere.numIndices, GL_UNSIGNED_INT, 0);
 }
+
+GLSphere Celestial::sphere;

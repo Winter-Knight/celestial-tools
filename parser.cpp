@@ -32,15 +32,11 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 	
 		// If line is recognized celestial type, then create new celestial. If not recognized then continue to next line
 		if (line == "[Celestial]") {
-			if (celestial)
-				celestial->Init();
 			celestial = new Celestial();
 			celestials.push_back(celestial);
 			continue;
 		}
 		else if (line == "[Orbital]") {
-			if (celestial)
-				celestial->Init();
 			celestial = new Orbital();
 			celestials.push_back(celestial);
 			continue;
@@ -64,7 +60,7 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		}
 		else if (fieldName == "Shader:") {
 			ss >> strValue;
-			celestial->program = new GLProgram("shaders/celestial.vert", NULL, "shaders/celestial.tes", strValue.c_str());
+			celestial->program = new GLProgram("shaders/celestialV.vert", strValue.c_str());
 		}
 		else if (fieldName == "Distance:") {
 			ss >> fValue;
@@ -102,9 +98,6 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		}
 	}
 	
-	if (celestial)
-		celestial->Init();
-
 	file.close();
 }
 
