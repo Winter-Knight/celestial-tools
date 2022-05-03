@@ -1,12 +1,12 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#ifndef _WIN32
+/* #ifndef _WIN32
 	#define GL_GLEXT_PROTOTYPES
 	#include <GL/gl.h>
-#else
+#else */ // Debian ImGui needs glew
 	#include <GL/glew.h>
-#endif // _WIN32
+// #endif // _WIN32
 
 #include <SDL2/SDL.h>
 
@@ -25,6 +25,7 @@ public:
 	void Swap();
 
 	SDL_Window * GetWindow() { return window; }
+	SDL_GLContext * GetContext() { return &context; }
 	unsigned int GetWindowHeight() { SDL_GetWindowSize(window, &width, &height); return height; }
 
 private:

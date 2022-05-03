@@ -2,29 +2,33 @@
 #define WORLD_H
 
 #include "window.h"
-#include "camera.h"
-#include "skybox.h"
 #include "input.h"
-#include "celestial.h"
+#include "star.h"
+#include "optionswindow.h"
 #include "framebuffer.h"
+#include "../twister-std.h"
 
 class World {
 public:
 	World(Window * w, InputHandler * i) { window = w; input = i; }
-	void Init(const char * systemFile);
+	void Init();
 	void Play();
 
 private:
+	void UpdateStars();
+
 	Window * window;
 	InputHandler * input;
-
+	OptionsWindow * optionsWindow;
+	
 	Camera * camera;
-	Skybox * skybox;
+	
+	StarArray starArray;
+	Twister twister;
 
-	std::vector<Celestial *> celestials;
-
-	Framebuffer * debugFramebuffer;
+	// Debugging
 	GLProgram * debugProgram;
+	Framebuffer * debugFramebuffer;
 };
 
 #endif // WORLD_H

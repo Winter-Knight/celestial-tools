@@ -11,7 +11,7 @@ Period: 8760
 Tilt: 45
 Size: 0.069911
 Orbits: 0 #Sun
-Texture: images/gas_giant_lookup1.png
+Texture: images/uvgrid-color.jpg
 Shader: shaders/gas.frag
 
 [Orbital]
@@ -48,8 +48,8 @@ Shader: shaders/daisy.frag
 
 
 [Camera]
-Position: 778 0 1.5
-Direction: 0 0 -1
+Position: 778.3 0 0
+Direction: -1 0 0
 Up: 0 1 0
 FOV: 60
 Near: 0.001

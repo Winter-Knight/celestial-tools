@@ -36,14 +36,16 @@ Window::Window()
 	SDL_GetVersion(&version);
 	printf("SDL Linked Version: %d.%d.%d\n", version.major, version.minor, version.patch);
 
-#ifdef _WIN32
+// #ifdef _WIN32
+// Debian ImGui needs glew
 	GLenum err = glewInit();
+	glGetError(); // GLEW triggers OpenGL error if core profile is set. Discard GLEW errors.
 	if (err != GLEW_OK) {
 		/* Problem: glewInit failed, something is seriously wrong. */
 		printf("Glew Error: %s\n", glewGetErrorString(err));
 	}
 	printf("Glew Version: %s\n", glewGetString(GLEW_VERSION));
-#endif // _WIN32
+// #endif // _WIN32
 
 	CheckSDLError("Window()");
 
@@ -55,7 +57,7 @@ void Window::InitOpenGL()
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-//	glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

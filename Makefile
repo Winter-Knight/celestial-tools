@@ -1,12 +1,12 @@
 BIN = celestial
-SOURCE_FILES= main.cpp window.cpp input.cpp texture.cpp world.cpp camera.cpp celestial.cpp skybox.cpp parser.cpp sphere.cpp glsphere.cpp
+SOURCE_FILES= main.cpp window.cpp input.cpp texture.cpp world.cpp camera.cpp celestial.cpp skybox.cpp parser.cpp sphere.cpp glsphere.cpp framebuffer.cpp
 HEADERS = $(shell ls *.h)
 
 CXX = g++
 OPT = -O0 -g
 CXXFLAGS = -Wall -Wno-unused-variable $(OPT)
 OBJECTS = $(patsubst %.cpp,%.o,$(SOURCE_FILES))
-LIBS = -lGL -lSDL2 -lSDL2_image
+LIBS = -lGL -lGLEW -lSDL2 -lSDL2_image
 
 WIN_NATIVE_CXX = g++
 WIN_NATIVE_CXXFLAGS = -Wall -Wno-comment -O2 -DSDL_MAIN_HANDLED -DGLEW_STATIC -I../mbsoftworks-win32-depends/include/

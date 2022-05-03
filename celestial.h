@@ -4,12 +4,12 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "../gl-program.h"
-
 #include "camera.h"
 #include "texture.h"
 #include "input.h"
 #include "glsphere.h"
+
+#include "../gl-program.h"
 
 class Celestial {
 public:

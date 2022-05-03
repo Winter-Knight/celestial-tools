@@ -37,8 +37,8 @@ void Skybox::Init()
 	                       1, 0, 4,
 	                       1, 5, 6, // Right
 	                       6, 2, 1,
-	                       4, 5, 6, // Front
-	                       6, 7, 4 };
+	                       4, 6, 5, // Front
+	                       6, 4, 7 };
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	
 

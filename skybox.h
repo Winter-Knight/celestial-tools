@@ -1,9 +1,9 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
-#include "../gl-program.h"
-
 #include "camera.h"
+
+#include "../gl-program.h"
 
 class Skybox {
 public:

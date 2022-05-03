@@ -1,13 +1,12 @@
-#version 330 core
+#version 400 core
 
 in vec3 uv;
-in vec3 antinormal;
 
 out vec3 fragColor;
 
 uniform sampler2D texture0;
 
-const float PI = 3.14159;
+const float PI = 3.141592653589793;
 
 void main()
 {
@@ -19,16 +18,31 @@ void main()
 	else
 		fragColor = color;
 */
-	float vangle = asin(uv.y);
-	float th = cos(vangle);
-	float hangle = acos(clamp(uv.x / th, -1, 1));
+	vec3 n = normalize(uv);
+//	vec3 n = uv;
 	
-//	fragColor = vec3(hangle / (2 * PI), (vangle + 0.5 * PI) / PI, 0.0);
-//	fragColor = vec3(hangle / (2 * PI), 0.0, 0.0);
+	float vangle = asin(n.y);
+	float th = cos(vangle);
+	
+	if (th == 0)
+		th = 0.00001;
+	
+	float hangle = acos(clamp(n.x / th, -1, 1));
+	
+	if (n.z >= 0.0)
+		hangle = 2 * PI - hangle;
 
-	float cosTheta = dot(antinormal, vec3(1.0, 0.0, 0.0));
-	if (cosTheta < 0.0)
-		fragColor = vec3(0.0);
+//	hangle = atan(n.z, n.x);
+
+
+	vec2 frag_uv = vec2(hangle / (2 * PI), (vangle + 0.5 * PI) / PI);
+	
+	if (textureQueryLod(texture0, frag_uv).x >= 9.9)
+		// Work around weird bug
+		if (frag_uv.x < 0.5)
+			fragColor = texture(texture0, frag_uv + vec2(0.0001)).rgb;
+		else
+			fragColor = texture(texture0, frag_uv - vec2(0.0001)).rgb;
 	else
-		fragColor = texture(texture0, vec2(hangle / (2 * PI), (vangle + 0.5 * PI) / PI)).rgb;
+		fragColor = texture(texture0, frag_uv).rgb;
 }

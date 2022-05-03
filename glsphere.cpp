@@ -5,10 +5,12 @@ void GLSphere::Init(int level)
 	Sphere sphere1;
 	Sphere sphere2;
 	if (level % 2 == 0)
-		sphere1.InitOctahedron();
+//		sphere1.InitOctahedron();
+		sphere1.InitIcosahedron();
 	else
-		sphere2.InitOctahedron();
-	
+//		sphere2.InitOctahedron();
+		sphere2.InitIcosahedron();
+
 	while (level) {
 		level--;
 		if (level % 2 == 0)
