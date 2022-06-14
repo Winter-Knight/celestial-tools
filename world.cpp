@@ -20,25 +20,35 @@ void World::Init(const char * systemFile)
 	skybox->Init();
 	skybox->program = new GLProgram("shaders/skybox.vert", "shaders/skybox.frag");
 	
+	// Setup skypanorama
+	skypanorama = new SkyPanorama();
+	skypanorama->Init("starbox-creator/starfield3.png");
+	skypanorama->program = new GLProgram("shaders/skypanorama.vert", "shaders/skypanorama.frag");
+	
 	// OpenGL Sphere
 	Celestial::sphere.Init(4);
 
 	// Load celestial objects
+//	parseSystemFile(celestials, systemFile, "shaders/celestial.vert", "shaders/celestial.tes");
 	parseSystemFile(celestials, systemFile);
-	
-	
+
 	// Set up debugging:
 	
 	debugProgram = new GLProgram("shaders/celestialV.vert", "shaders/gas-debug.frag");
 	debugFramebuffer = new Framebuffer();
-	debugFramebuffer->Init();
-	
+	debugFramebuffer->Init(3, 3, GL_FLOAT, 2048, 2048);
+
+	glDisable(GL_CULL_FACE);
 }
 
 void World::Play()
 {
 	unsigned int i;
 	float time = 0.0f;
+	
+	GLProgram marioCPUSphereProgram = *celestials[1]->program;
+	GLProgram marioTessSphereProgram("shaders/celestial.vert", NULL, "shaders/celestial.tes", "shaders/gas.frag");
+	SphereType sphereType = CPUSPHERE;
 
 	while (!input->HandleEvents(window)) {
 		if (!input->paused)
@@ -48,13 +58,26 @@ void World::Play()
 
 		camera->Update(input);
 
+		if (input->lastKey == SDLK_o) {
+			if (sphereType == TESSSPHERE) {
+				sphereType = CPUSPHERE;
+				celestials[1]->program = &marioCPUSphereProgram;
+			}
+			else if (sphereType == CPUSPHERE) {
+				sphereType = TESSSPHERE;
+				celestials[1]->program = &marioTessSphereProgram;
+			}
+		}
+
 		window->Clear();
 
 		// Draw all objects
 		for (i = 0; i < celestials.size(); i++)
-			celestials[i]->Draw(camera);
+//			celestials[i]->Draw(camera, CPUSPHERE);
+			celestials[i]->Draw(camera, sphereType);
 
-		skybox->Draw(camera);
+//		skybox->Draw(camera);
+//		skypanorama->Draw(camera);
 
 		window->Swap();
 

@@ -20,10 +20,4 @@ public:
 	GLProgram * program;
 };
 
-
-
-
-
-
-
 #endif // SKYBOX_H

@@ -6,19 +6,23 @@
 
 #include "input.h"
 
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+
 class Framebuffer {
 public:
-	void Init();
+	void Init(int numAttachments, int numChannels, GLenum channelType, int width, int height);
 	void Use();
 	void Stop();
 	void CheckForClicks(InputHandler * input);
+	GLenum GetReadPixelFormat();
+	void * GetData(int attachment);
 
 	GLuint framebuffer;
+	int numAttachments;
+	int numChannels;
+	GLenum channelType;
+	int width, height;
 };
-
-
-
-
-
 
 #endif // FRAMEBUFFER_H

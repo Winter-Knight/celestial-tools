@@ -11,8 +11,10 @@ Period: 8760
 Tilt: 45
 Size: 0.069911
 Orbits: 0 #Sun
-Texture: images/uvgrid-color.jpg
+#Texture: /mnt/michelangelo/firefox/satara_night_no_lamps.jpg
+Texture: starbox-creator/starfield3.png
 Shader: shaders/gas.frag
+#Shader: shaders/starbox.frag
 
 [Orbital]
 Name: Shadow

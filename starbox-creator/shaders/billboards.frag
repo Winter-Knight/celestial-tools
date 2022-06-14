@@ -3,7 +3,7 @@
 in vec2 uv;
 in vec4 color;
 
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 void main()
 {

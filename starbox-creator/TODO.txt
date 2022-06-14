@@ -1,3 +1,1 @@
-* save star box to png
-
 * fix bug where imgui gets clicks and hovers when it's not supposed to

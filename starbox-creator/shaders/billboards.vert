@@ -1,6 +1,6 @@
 #version 330 core
 
-layout(location = 0) in vec3 pos_modelspace; // includes 2d modelspace (-0.5, 0.5) and size
+layout(location = 0) in vec3 pos_modelspace; // includes 2d modelspace (-1.0, 1.0) and size
 layout(location = 1) in vec4 vColor;
 layout(location = 2) in vec3 center_worldspace;
 

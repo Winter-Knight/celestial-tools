@@ -8,13 +8,20 @@
 #include "texture.h"
 #include "input.h"
 #include "glsphere.h"
+#include "gltesssphere.h"
 
 #include "../gl-program.h"
+
+enum SphereType {
+	CPUSPHERE,
+	TESSSPHERE
+};
 
 class Celestial {
 public:
 	virtual void Update(InputHandler * input, float time) {}
 	virtual void Draw(Camera * camera);
+	virtual void Draw(Camera * camera, SphereType sphereType);
 	virtual void AddTexture(const char * filename);
 
 // protected:
@@ -28,6 +35,7 @@ public:
 	GLProgram * program;
 	
 	static GLSphere sphere;
+	GLTessSphere tessSphere;
 };
 
 

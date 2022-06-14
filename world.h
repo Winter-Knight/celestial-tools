@@ -4,6 +4,7 @@
 #include "window.h"
 #include "camera.h"
 #include "skybox.h"
+#include "skypanorama.h"
 #include "input.h"
 #include "celestial.h"
 #include "framebuffer.h"
@@ -20,6 +21,7 @@ private:
 
 	Camera * camera;
 	Skybox * skybox;
+	SkyPanorama * skypanorama;
 
 	std::vector<Celestial *> celestials;
 

@@ -28,6 +28,8 @@ void main()
 		th = 0.00001;
 	
 	float hangle = acos(clamp(n.x / th, -1, 1));
+//	float hangle = acos(n.x);
+
 	
 	if (n.z >= 0.0)
 		hangle = 2 * PI - hangle;
@@ -37,12 +39,12 @@ void main()
 
 	vec2 frag_uv = vec2(hangle / (2 * PI), (vangle + 0.5 * PI) / PI);
 	
-	if (textureQueryLod(texture0, frag_uv).x >= 9.9)
+/*	if (textureQueryLod(texture0, frag_uv).x >= 9.9)
 		// Work around weird bug
 		if (frag_uv.x < 0.5)
 			fragColor = texture(texture0, frag_uv + vec2(0.0001)).rgb;
 		else
 			fragColor = texture(texture0, frag_uv - vec2(0.0001)).rgb;
 	else
-		fragColor = texture(texture0, frag_uv).rgb;
+*/		fragColor = texture(texture0, frag_uv).rgb;
 }

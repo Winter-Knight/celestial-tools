@@ -169,7 +169,7 @@ void StarArray::Draw(Camera * camera)
 	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 }
 
-void StarArray::SaveToPNG(Camera * camera, StarType starType)
+void StarArray::SaveToPNG(StarType starType)
 {
 	if (starType != BILLBOARDS) {
 		printf("Only billboard savings supported for now\n");
@@ -179,7 +179,6 @@ void StarArray::SaveToPNG(Camera * camera, StarType starType)
 	static GLProgram * saveStarboxProgram = NULL;
 	if (!saveStarboxProgram)
 		saveStarboxProgram = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards.frag");
-//		saveStarboxProgram = new GLProgram("shaders/billboards.vert", "shaders/billboards.frag");
 
 	saveStarboxProgram->Use();
 

@@ -29,10 +29,6 @@ void OptionsWindow::Draw(float delta)
 	io.DisplaySize = ImVec2(windowWidth, windowHeight);
 	io.DeltaTime = glm::min(delta, 0.001f);
 
-	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(window);
-	ImGui::NewFrame();
-
 	ImGui::Begin("Options");
 
 	ImGui::DragScalar("Number of Stars", ImGuiDataType_U32, &options.numStars, 10.0f);
@@ -59,12 +55,11 @@ void OptionsWindow::Draw(float delta)
 	ImGui::Separator();
 	actions.updateStars = ImGui::Button("Update Stars (F5)");
 	ImGui::SameLine();
+	actions.previewStarbox = ImGui::Button("Preview Skybox");
+	ImGui::SameLine();
 	actions.saveStarbox = ImGui::Button("Save Skybox");
 
 	ImGui::End();
-
-	ImGui::Render();
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 void OptionsWindow::Load()

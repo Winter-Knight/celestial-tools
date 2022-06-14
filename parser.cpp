@@ -4,7 +4,7 @@
 #include "parser.h"
 #include "celestial.h"
 
-void parseSystemFile(std::vector<Celestial *> & celestials, const char * filename)
+void parseSystemFile(std::vector<Celestial *> & celestials, const char * filename, const char * vertexshaderfile, const char * tessEshaderfile)
 {
 	std::string line, fieldName;
 	std::stringstream ss;
@@ -60,7 +60,7 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		}
 		else if (fieldName == "Shader:") {
 			ss >> strValue;
-			celestial->program = new GLProgram("shaders/celestialV.vert", strValue.c_str());
+			celestial->program = new GLProgram(vertexshaderfile, NULL, tessEshaderfile, strValue.c_str());
 		}
 		else if (fieldName == "Distance:") {
 			ss >> fValue;

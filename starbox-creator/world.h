@@ -29,6 +29,9 @@ private:
 	// Debugging
 	GLProgram * debugProgram;
 	Framebuffer * debugFramebuffer;
+
+	// Save to PNG
+	Framebuffer * pngFramebuffer;
 };
 
 #endif // WORLD_H

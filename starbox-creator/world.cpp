@@ -1,6 +1,9 @@
 #include <imgui/backends/imgui_impl_sdl.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "world.h"
+#include "pngsaver.h"
+#include "imguifilebrowser/ImGuiFileBrowser.h"
 
 void World::Init()
 {
@@ -45,9 +48,13 @@ void World::Init()
 
 	// Set up debugging:
 	
-/*	debugProgram = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards-debug.frag");
+	debugProgram = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards-debug.frag");
 	debugFramebuffer = new Framebuffer();
-	debugFramebuffer->Init(); */
+	debugFramebuffer->Init(3, 3, GL_FLOAT, 2048, 2048);
+
+	// Set up PNG Framebuffer
+	pngFramebuffer = new Framebuffer();
+	pngFramebuffer->Init(1, 4, GL_UNSIGNED_BYTE, 8192, 4096);
 }
 
 #define rand distributionDouble11(twister.GetGenerator())
@@ -105,6 +112,10 @@ void World::UpdateStars()
 void World::Play()
 {
 	SDL_Event event;
+	bool showStarbox = false;
+	bool popupFileDialog = false;
+	imgui_addons::ImGuiFileBrowser file_dialog;
+
 	while (!input->quit) {
 
 		input->Reset();
@@ -127,43 +138,66 @@ void World::Play()
 		if (optionsWindow->GetActions()->updateStars || input->lastKey == SDLK_F5)
 			UpdateStars();
 
-		static bool showStarbox = false;
-		if (optionsWindow->GetActions()->saveStarbox || showStarbox) {
+		if (optionsWindow->GetActions()->saveStarbox)
+			popupFileDialog = true;
+		
+		if (optionsWindow->GetActions()->previewStarbox)
+			showStarbox = !showStarbox;
+
+
+		window->Clear();
+
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplSDL2_NewFrame(window->GetWindow());
+		ImGui::NewFrame();
+
+		if (showStarbox) {
 			StarType starType = optionsWindow->GetOptions()->billboards ? BILLBOARDS : SPHERES;
+
+			// Draw PNG to screen (preview)
+			starArray.SaveToPNG(starType);
+			optionsWindow->Draw(0.016f);
+			
+			debugFramebuffer->Use();
 			window->Clear();
-			starArray.SaveToPNG(camera, starType); // TODO: Save star box
-//			starArray.Draw(camera);
-			window->Swap();
-
-			// Now write into debug buffer
-			
-/*			debugFramebuffer->Use();
-			
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			debugProgram->Use();
-
 			glDrawElements(GL_TRIANGLES, starArray.stars.size() * 6, GL_UNSIGNED_INT, 0);
-
 			debugFramebuffer->CheckForClicks(input);
-			debugFramebuffer->Stop(); */
-
-			if (input->lastKey == SDLK_F6) {
-				showStarbox = false;
-				optionsWindow->Draw(0.016f);
-			}
-			else
-				showStarbox = true;
+			debugFramebuffer->Stop();
 		}
 		else {
-			window->Clear();
 			starArray.Draw(camera);
 			optionsWindow->Draw(0.016f);
-			window->Swap();
 		}
-		
-//		printf("%d %d\n", showStarbox, input->lastKey == SDLK_F6);
-		
+
+		if (popupFileDialog) {
+			ImGui::OpenPopup("Save File...");
+			popupFileDialog = false;
+		}
+		if (file_dialog.showFileDialog("Save File...", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".png")) {
+			StarType starType = optionsWindow->GetOptions()->billboards ? BILLBOARDS : SPHERES;
+
+			pngFramebuffer->Use();
+			glViewport(0, 0, 8192, 4096);
+			
+			// Draw PNG to framebuffer
+			window->Clear();
+			starArray.SaveToPNG(starType);
+
+			unsigned char * imageData = (unsigned char *) pngFramebuffer->GetData(0);
+
+			pngFramebuffer->Stop();
+			glViewport(0, 0, input->windowWidth, input->windowHeight);
+
+			SaveToPNG(file_dialog.selected_path.c_str(), 4, 8, 8192, 4096, imageData);
+
+			delete[] imageData;
+		}
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+		window->Swap();
 	}
 	
 	optionsWindow->Save();

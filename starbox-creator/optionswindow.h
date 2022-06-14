@@ -23,6 +23,7 @@ struct Options {
 
 struct Actions {
 	bool updateStars;
+	bool previewStarbox;
 	bool saveStarbox;
 };
 
@@ -36,7 +37,6 @@ public:
 
 	Options * GetOptions() { return &options; }
 	Actions * GetActions() { return &actions; }
-	bool IsNewAction() { return actions.updateStars || actions.saveStarbox; }
 
 	void Load();
 	void Save();

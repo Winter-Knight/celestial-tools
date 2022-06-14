@@ -28,7 +28,7 @@ public:
 
 	void Update(StarType starType);
 	void Draw(Camera * camera);
-	void SaveToPNG(Camera * camera, StarType starType);
+	void SaveToPNG(StarType starType);
 
 	GLProgram * sphereProgram;
 	GLProgram * billboardProgram;
