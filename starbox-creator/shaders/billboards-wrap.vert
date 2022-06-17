@@ -11,10 +11,6 @@ out vec3 output1;
 out vec3 output2;
 out vec3 output3;
 
-uniform mat4 VP;
-uniform vec3 cameraRight;
-uniform vec3 cameraUp;
-
 const float PI = 3.14159;
 
 void main()
@@ -36,15 +32,12 @@ void main()
 
 	y = asin(normalize(pos_worldspace).y);
 	y = y * 2.0 / PI;
-//	y = normalize(pos_worldspace).y;
 	
 	gl_Position = vec4(x, y, 0.0, 1.0);
 	
 	uv = pos_modelspace.xy;
 	color = vColor;
-//	float l = length(right);
-//	color = vec4(pow(l, 5), 1.0 - pow(l, 5), 0.0, 1.0);
-	color = vec4(x, 0.0, -x, 1.0);
+//	color = vec4(x, 0.0, -x, 1.0);
 
 	output1 = pos_modelspace;
 	output2 = center_worldspace;

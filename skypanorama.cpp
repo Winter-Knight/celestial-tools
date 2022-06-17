@@ -37,17 +37,15 @@ void SkyPanorama::Init(const char * filename)
 void SkyPanorama::Draw(Camera * camera)
 {
 	glBindVertexArray(vertexArray);
-
-	Window::CheckGLError("5");
 	program->Use();
+
 	glm::vec4 projectionVec(camera->perspective[0][2], camera->perspective[0][0], camera->perspective[1][2], camera->perspective[1][1]);
 	program->SetUniform4f("asym_proj", &projectionVec[0]);
-	program->SetUniformMatrix4f("pano_transform", &camera->view[0][0]);
-	Window::CheckGLError("6");
+
+	glm::mat4 inverseView = glm::inverse(camera->view);
+	program->SetUniformMatrix4f("pano_transform", &inverseView[0][0]);
 
 	texture.Bind(program, 0);
 
-	Window::CheckGLError("3");
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-	Window::CheckGLError("4");
 }

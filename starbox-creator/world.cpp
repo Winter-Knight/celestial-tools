@@ -32,7 +32,7 @@ void World::Init()
 	Star::sphere = Star::sphere.Quadruple();
 	
 	// Init StarArray
-	starArray.sphereProgram = new GLProgram("shaders/star.vert", "shaders/star.frag");
+	starArray.sphereProgram = new GLProgram("shaders/star2.vert", "shaders/star.frag");
 	starArray.billboardProgram = new GLProgram("shaders/billboards.vert", "shaders/billboards.frag");
 
 	// Options Window
@@ -54,7 +54,8 @@ void World::Init()
 
 	// Set up PNG Framebuffer
 	pngFramebuffer = new Framebuffer();
-	pngFramebuffer->Init(1, 4, GL_UNSIGNED_BYTE, 8192, 4096);
+	int imageSize = optionsWindow->GetOptions()->imageSize;
+	pngFramebuffer->Init(1, 4, GL_UNSIGNED_BYTE, imageSize, imageSize / 2);
 }
 
 #define rand distributionDouble11(twister.GetGenerator())
@@ -67,6 +68,9 @@ void World::UpdateStars()
 
 	float distance, size;
 	glm::vec4 color;
+
+	if (options->seed)
+		twister.Init(options->seed);
 
 	std::uniform_real_distribution<double> distributionDouble11(-1.0, 1.0);
 	std::normal_distribution<double> asdnd(options->averageStarDistance, options->averageStarDistanceDeviation);
@@ -123,6 +127,11 @@ void World::Play()
 			if (!SDL_GetRelativeMouseMode())
 				ImGui_ImplSDL2_ProcessEvent(&event);
 			input->HandleEvents(&event, window);
+			
+			if (input->windowEvent && !SDL_GetRelativeMouseMode()) {
+				camera->aspect = float(input->windowWidth) / float(input->windowHeight);
+				camera->CalculatePerspective();
+			}
 		}
 		
 		if (input->lastKey == SDLK_F8) {
@@ -176,9 +185,15 @@ void World::Play()
 		}
 		if (file_dialog.showFileDialog("Save File...", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".png")) {
 			StarType starType = optionsWindow->GetOptions()->billboards ? BILLBOARDS : SPHERES;
+			int imageWidth = optionsWindow->GetOptions()->imageSize;
 
+			if (imageWidth != pngFramebuffer->width) {
+				pngFramebuffer->width = imageWidth;
+				pngFramebuffer->height = imageWidth / 2;
+				pngFramebuffer->InitImages();
+			}
 			pngFramebuffer->Use();
-			glViewport(0, 0, 8192, 4096);
+			glViewport(0, 0, imageWidth, imageWidth / 2);
 			
 			// Draw PNG to framebuffer
 			window->Clear();
@@ -189,7 +204,7 @@ void World::Play()
 			pngFramebuffer->Stop();
 			glViewport(0, 0, input->windowWidth, input->windowHeight);
 
-			SaveToPNG(file_dialog.selected_path.c_str(), 4, 8, 8192, 4096, imageData);
+			SaveToPNG(file_dialog.selected_path.c_str(), 4, 8, imageWidth, imageWidth / 2, imageData);
 
 			delete[] imageData;
 		}

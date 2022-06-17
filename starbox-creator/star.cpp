@@ -18,6 +18,38 @@ void StarArray::ClearStars()
 	stars.clear();
 }
 
+void StarArray::MakeSpheresFaster()
+{
+	glBufferData(GL_ARRAY_BUFFER, stars.size() * sizeof(Star) + Star::sphere.vertices.size() * sizeof(glm::vec3),
+		NULL, GL_STATIC_DRAW);
+
+	// Star Array
+	glBufferSubData(GL_ARRAY_BUFFER, 0, stars.size() * sizeof(Star), &stars[0]);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Star), (void *) offsetof(Star, pos));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, sizeof(Star), (void *) offsetof(Star, size));
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, sizeof(Star), (void *) offsetof(Star, color));
+
+	// Sphere Array
+	glBufferSubData(GL_ARRAY_BUFFER, stars.size() * sizeof(Star),
+		Star::sphere.vertices.size() * sizeof(glm::vec3), &Star::sphere.vertices[0]);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void *) (stars.size() * sizeof(Star)));
+
+	glVertexAttribDivisor(0, 0);
+	glVertexAttribDivisor(1, 1);
+	glVertexAttribDivisor(2, 1);
+	glVertexAttribDivisor(3, 1);
+
+	// Index Array
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, Star::sphere.faces.size() * sizeof(glm::uvec3),
+		&Star::sphere.faces[0], GL_STATIC_DRAW);
+
+	activeProgram = sphereProgram;
+}
+
 void StarArray::MakeSpheres()
 {
 	// Vertices
@@ -117,8 +149,11 @@ void StarArray::Update(StarType starType)
 	glGenBuffers(1, &indexBuffer);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
-	if (starType == SPHERES)
-		MakeSpheres();
+	if (starType == SPHERES) {
+		MakeSpheresFaster();
+		colorBuffer = 0;
+		return;
+	}
 	else if (starType == BILLBOARDS)
 		MakeBillboards();
 
@@ -162,27 +197,36 @@ void StarArray::Draw(Camera * camera)
 		activeProgram->SetUniform3f("cameraUp", &cameraUp[0]);
 		
 		numIndices = stars.size() * 6;
+		glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
 	}
-	else
-		numIndices = stars.size() * Star::sphere.faces.size() * 3;
-
-	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0);
+	else {
+//		numIndices = stars.size() * Star::sphere.faces.size() * 3;
+		numIndices = Star::sphere.faces.size() * 3;
+		glDrawElementsInstanced(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, 0, stars.size());
+	}
 }
 
 void StarArray::SaveToPNG(StarType starType)
 {
-	if (starType != BILLBOARDS) {
-		printf("Only billboard savings supported for now\n");
-		return;
+	static GLProgram * saveStarboxProgramBillboards = NULL;
+	static GLProgram * saveStarboxProgramSpheres = NULL;
+	
+	if (starType == BILLBOARDS) {
+		if (!saveStarboxProgramBillboards)
+			saveStarboxProgramBillboards = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards.frag");
+	
+		saveStarboxProgramBillboards->Use();
+	
+		glDrawElements(GL_TRIANGLES, stars.size() * 6, GL_UNSIGNED_INT, 0);
 	}
-
-	static GLProgram * saveStarboxProgram = NULL;
-	if (!saveStarboxProgram)
-		saveStarboxProgram = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards.frag");
-
-	saveStarboxProgram->Use();
-
-	glDrawElements(GL_TRIANGLES, stars.size() * 6, GL_UNSIGNED_INT, 0);
+	else if (starType == SPHERES) {
+		if (!saveStarboxProgramSpheres)
+			saveStarboxProgramSpheres = new GLProgram("shaders/star-wrap.vert", "shaders/star.frag");
+		
+		saveStarboxProgramSpheres->Use();
+		
+		glDrawElementsInstanced(GL_TRIANGLES, Star::sphere.faces.size() * 3, GL_UNSIGNED_INT, 0, stars.size());
+	}
 }
 
 Sphere Star::sphere;

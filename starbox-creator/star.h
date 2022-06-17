@@ -10,7 +10,8 @@
 
 enum StarType {
 	SPHERES,
-	BILLBOARDS
+	BILLBOARDS,
+	SPHERES_OLD
 };
 
 struct Star {
@@ -30,17 +31,18 @@ public:
 	void Draw(Camera * camera);
 	void SaveToPNG(StarType starType);
 
-	GLProgram * sphereProgram;
-	GLProgram * billboardProgram;
-
 //private:
 	void MakeSpheres();
+	void MakeSpheresFaster();
 	void MakeBillboards();
 
 	GLuint vertexArray = 0;
 	GLuint vertexBuffer = 0;
 	GLuint colorBuffer = 0;
 	GLuint indexBuffer = 0;
+
+	GLProgram * sphereProgram;
+	GLProgram * billboardProgram;
 
 	std::vector<Star> stars;
 	GLProgram * activeProgram;

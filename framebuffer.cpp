@@ -1,7 +1,5 @@
 #include "framebuffer.h"
 
-const unsigned int FB_WIDTH = 2048;
-
 void Framebuffer::Init(int numA, int numC, GLenum channelT, int w, int h)
 {
 	numAttachments = numA;
@@ -9,45 +7,19 @@ void Framebuffer::Init(int numA, int numC, GLenum channelT, int w, int h)
 	channelType = channelT;
 	width = w;
 	height = h;
-	
-	GLenum internalFormat;
-	GLenum externalFormat;
-	
-	// When other types of attachments need to be supported, add support here
-	if (numChannels == 3 && channelType == GL_FLOAT) {
-		internalFormat = GL_RGB32F;
-		externalFormat = GL_RGB;
-	}
-	else if (numChannels == 4 && channelType == GL_FLOAT) {
-		internalFormat = GL_RGBA32F;
-		externalFormat = GL_RGBA;
-	}
-	else if (numChannels == 3 && channelType == GL_UNSIGNED_BYTE) {
-		internalFormat = GL_RGB;
-		externalFormat = GL_RGB;
-	}
-	else if (numChannels == 4 && channelType == GL_UNSIGNED_BYTE) {
-		internalFormat = GL_RGBA;
-		externalFormat = GL_RGBA;
-	}
-	else if (numChannels == 1 && channelType == GL_INT) {
-		internalFormat = GL_R32I;
-		externalFormat = GL_RED_INTEGER;
-	}
-	else {
-		printf("That numChannels/channelType combo is not currently supported. Add support in framebuffer.cpp\n");
-		printf("Framebuffer not initialized!\n");
-		return;
+
+	if (numAttachments > 8) {
+		printf("This program only supports a maximum of 8 framebuffer attachments!\n");
+		printf("Reducing number of attachments to 8!\n");
+		numAttachments = 8;
 	}
 
-	GLuint renderbuffer;
 	glGenRenderbuffers(1, &renderbuffer);
-	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-
-	GLuint colorTextures[numAttachments];
 	glGenTextures(numAttachments, &colorTextures[0]);
 
+	if (!InitImages())
+		return;
+	
 	glGenFramebuffers(1, &framebuffer);
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbuffer);
@@ -55,16 +27,9 @@ void Framebuffer::Init(int numA, int numC, GLenum channelT, int w, int h)
 	for (int i = 0; i < numAttachments; i++) {
 		glActiveTexture(GL_TEXTURE1 + i);
 		glBindTexture(GL_TEXTURE_2D, colorTextures[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, externalFormat, channelType, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
 		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, colorTextures[i], 0);
-	}
-	
-	if (numAttachments > 8) {
-		printf("This program only supports a maximum of 8 framebuffer attachments!\n");
-		printf("Reducing number of attachments to 8!\n");
-		numAttachments = 8;
 	}
 
 	GLenum drawBuffers[8] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3,
@@ -84,15 +49,65 @@ void Framebuffer::Stop()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+bool Framebuffer::SetFormats(GLenum * internalFormat, GLenum * externalFormat)
+{
+	// When other types of attachments need to be supported, add support here
+	if (numChannels == 3 && channelType == GL_FLOAT) {
+		*internalFormat = GL_RGB32F;
+		*externalFormat = GL_RGB;
+	}
+	else if (numChannels == 4 && channelType == GL_FLOAT) {
+		*internalFormat = GL_RGBA32F;
+		*externalFormat = GL_RGBA;
+	}
+	else if (numChannels == 3 && channelType == GL_UNSIGNED_BYTE) {
+		*internalFormat = GL_RGB;
+		*externalFormat = GL_RGB;
+	}
+	else if (numChannels == 4 && channelType == GL_UNSIGNED_BYTE) {
+		*internalFormat = GL_RGBA;
+		*externalFormat = GL_RGBA;
+	}
+	else if (numChannels == 1 && channelType == GL_INT) {
+		*internalFormat = GL_R32I;
+		*externalFormat = GL_RED_INTEGER;
+	}
+	else {
+		printf("That numChannels/channelType combo is not currently supported. Add support in framebuffer.cpp\n");
+		printf("Framebuffer not properly initialized!\n");
+		return false;
+	}
+	return true;
+}
+
+// Initialize or re-intialize image and depth buffer only, with new size if requested
+bool Framebuffer::InitImages()
+{
+	GLenum internalFormat;
+	GLenum externalFormat;
+	if (!SetFormats(&internalFormat, &externalFormat))
+		return false;
+
+	glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
+
+	for (int i = 0; i < numAttachments; i++) {
+		glActiveTexture(GL_TEXTURE1 + i);
+		glBindTexture(GL_TEXTURE_2D, colorTextures[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, externalFormat, channelType, NULL);
+	}
+	return true;
+}
+
 GLenum Framebuffer::GetReadPixelFormat()
 {
 	switch(numChannels) {
 		case 1:
 			return GL_RED;
 		case 3:
-			return  GL_RGB;
+			return GL_RGB;
 		case 4:
-			return  GL_RGBA;
+			return GL_RGBA;
 	}
 	return GL_NONE;
 }
@@ -108,6 +123,7 @@ void Framebuffer::CheckForClicks(InputHandler * input)
 	if (!SDL_GetRelativeMouseMode() && input->button == SDL_BUTTON_LEFT) {
 		Use();
 		
+		// TODO: This only supports 3 floats or 3 ints. Bytes not tested.
 		for (int i = 0; i < numAttachments; i++) {
 			glReadBuffer(GL_COLOR_ATTACHMENT0 + i);
 			if (channelType == GL_FLOAT) {

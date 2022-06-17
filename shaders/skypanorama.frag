@@ -40,7 +40,7 @@ void main() {
 	cube_normal.z = -1.0;
 	cube_normal.x = (cube_normal.z * (-uv_interp.x - asym_proj.x)) / asym_proj.y;
 	cube_normal.y = (cube_normal.z * (-uv_interp.y - asym_proj.z)) / asym_proj.a;
-	cube_normal = inverse(mat3(pano_transform)) * cube_normal;
+	cube_normal = mat3(pano_transform) * cube_normal;
 	cube_normal.z = -cube_normal.z;
 
 	frag_color = texturePanorama(normalize(cube_normal.xyz), texture0);

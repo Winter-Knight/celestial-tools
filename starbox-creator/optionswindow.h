@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 
 struct Options {
+	unsigned int seed;
 	unsigned int numStars;
 	bool billboards;
 
@@ -19,6 +20,8 @@ struct Options {
 	bool averageColorNormalDistribution;
 	glm::vec4 averageColor;
 	glm::vec4 averageColorDeviation;
+	
+	int imageSize;
 };
 
 struct Actions {

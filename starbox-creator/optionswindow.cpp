@@ -31,6 +31,7 @@ void OptionsWindow::Draw(float delta)
 
 	ImGui::Begin("Options");
 
+	ImGui::InputScalar("Seed", ImGuiDataType_U32, &options.seed);
 	ImGui::DragScalar("Number of Stars", ImGuiDataType_U32, &options.numStars, 10.0f);
 	ImGui::Checkbox("Billboards", &options.billboards);
 
@@ -51,6 +52,26 @@ void OptionsWindow::Draw(float delta)
 	ImGui::Checkbox("Normal Distribution (color)", &options.averageColorNormalDistribution);
 	ImGui::ColorEdit4("Average Color", (float *) &options.averageColor);
 	ImGui::ColorEdit4("Deviation (color)", (float *) &options.averageColorDeviation);
+	
+	ImGui::Separator();
+	int imageSizeIndex;
+	switch(options.imageSize) {
+		case 2048: imageSizeIndex = 1; break;
+		case 4096: imageSizeIndex = 2; break;
+		case 8192: imageSizeIndex = 3; break;
+		case 16384: imageSizeIndex = 4; break;
+		case 1024: default: imageSizeIndex = 0;
+	}
+	const char * imageSizeItems[] = { "1K", "2K", "4K", "8K", "16K" };
+
+	ImGui::Combo("Image Size", &imageSizeIndex, imageSizeItems, 5);
+	switch(imageSizeIndex) {
+		case 0: options.imageSize = 1024; break;
+		case 1: options.imageSize = 2048; break;
+		case 2: options.imageSize = 4096; break;
+		case 3: options.imageSize = 8192; break;
+		case 4: options.imageSize = 16384; break;
+	}
 
 	ImGui::Separator();
 	actions.updateStars = ImGui::Button("Update Stars (F5)");
@@ -95,6 +116,8 @@ void OptionsWindow::Load()
 		ss.clear();
 		ss.str(line);
 		ss >> fieldName;
+		if (fieldName == "seed:")
+			ss >> options.seed;
 		if (fieldName == "numStars:")
 			ss >> options.numStars;
 		if (fieldName == "billboards:")
@@ -124,8 +147,13 @@ void OptionsWindow::Load()
 			ss >> floats[0] >> floats[1] >> floats[2] >> floats[3];
 			options.averageColorDeviation = floats;
 		}
-			
+		
+		else if (fieldName == "imageSize:")
+			ss >> options.imageSize;
 	}
+	
+	if (!options.imageSize)
+		options.imageSize = 1024;
 	
 	file.close();
 }
@@ -139,6 +167,7 @@ void OptionsWindow::Save()
 		return;
 	}
 
+	fprintf(fp, "seed: %u\n", options.seed);
 	fprintf(fp, "numStars: %u\n", options.numStars);
 	fprintf(fp, "billboards: %d\n", options.billboards);
 
@@ -154,6 +183,8 @@ void OptionsWindow::Save()
 	fprintf(fp, "averageColor: %f %f %f %f\n", options.averageColor.r, options.averageColor.g, options.averageColor.b, options.averageColor.a);
 	fprintf(fp, "averageColorDeviation: %f %f %f %f\n", options.averageColorDeviation.r,
 		options.averageColorDeviation.g, options.averageColorDeviation.b, options.averageColorDeviation.a);
+	
+	fprintf(fp, "imageSize: %d\n", options.imageSize);
 	
 	fclose(fp);
 }

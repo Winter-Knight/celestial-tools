@@ -17,8 +17,13 @@ public:
 	void CheckForClicks(InputHandler * input);
 	GLenum GetReadPixelFormat();
 	void * GetData(int attachment);
+	
+	bool SetFormats(GLenum * internalFormat, GLenum * externalFormat);
+	bool InitImages();
 
 	GLuint framebuffer;
+	GLuint renderbuffer;
+	GLuint colorTextures[8];
 	int numAttachments;
 	int numChannels;
 	GLenum channelType;

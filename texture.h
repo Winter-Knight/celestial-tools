@@ -1,12 +1,14 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include <string>
 #include <SDL2/SDL_image.h>
 #include "../gl-program.h"
 
 class Texture {
 public:
-	void Init(const char * filename);
+	void Init(std::string filename);
+	void InitETC2(const char * filename);
 	void Bind(GLProgram * program, int location);
 	
 	GLuint textureBuffer;
