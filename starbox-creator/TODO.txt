@@ -1,1 +1,2 @@
 * fix bug where imgui gets clicks and hovers when it's not supposed to
+* Use inheritance and polymorphism to replace the mess that is StarArray

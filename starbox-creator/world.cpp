@@ -28,18 +28,19 @@ void World::Init()
 	camera->CalculatePerspective();
 	
 	// Init sphere
-	Star::sphere.InitIcosahedron();
+	Star::sphere.InitOctahedron();
 	Star::sphere = Star::sphere.Quadruple();
 	
-	// Init StarArray
-	starArray.sphereProgram = new GLProgram("shaders/star2.vert", "shaders/star.frag");
-	starArray.billboardProgram = new GLProgram("shaders/billboards.vert", "shaders/billboards.frag");
-
 	// Options Window
 	optionsWindow = new OptionsWindow();
 	optionsWindow->Init(window->GetWindow(), window->GetContext());
 	
-	SDL_SetRelativeMouseMode(SDL_FALSE);
+	// Init StarArray
+	starArray.drawSphereProgramPerspective = new GLProgram("shaders/star.vert", "shaders/starSpheresPerspective.geom", "shaders/flat.frag", true);
+	starArray.drawSphereProgramWrap = new GLProgram("shaders/star.vert", "shaders/starSpheresWrap.geom", "shaders/flat.frag", true);
+	starArray.drawBillboardProgramPerspective = new GLProgram("shaders/star.vert", "shaders/starBillboardsPerspective.geom", "shaders/circle.frag", true);
+	starArray.drawBillboardProgramWrap = new GLProgram("shaders/star.vert", "shaders/starBillboardsWrap.geom", "shaders/circle.frag", true);
+	starArray.Init(&optionsWindow->GetOptions()->billboards);
 
 	// Stars
 	twister.Init();
@@ -47,7 +48,6 @@ void World::Init()
 	UpdateStars();
 
 	// Set up debugging:
-	
 	debugProgram = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards-debug.frag");
 	debugFramebuffer = new Framebuffer();
 	debugFramebuffer->Init(3, 3, GL_FLOAT, 2048, 2048);
@@ -56,6 +56,8 @@ void World::Init()
 	pngFramebuffer = new Framebuffer();
 	int imageSize = optionsWindow->GetOptions()->imageSize;
 	pngFramebuffer->Init(1, 4, GL_UNSIGNED_BYTE, imageSize, imageSize / 2);
+
+	SDL_SetRelativeMouseMode(SDL_FALSE);
 }
 
 #define rand distributionDouble11(twister.GetGenerator())
@@ -107,10 +109,7 @@ void World::UpdateStars()
 		starArray.AddStar(&star);
 	}
 
-	if (options->billboards)
-		starArray.Update(BILLBOARDS);
-	else
-		starArray.Update(SPHERES);
+	starArray.Update();
 }
 
 void World::Play()
@@ -160,31 +159,17 @@ void World::Play()
 		ImGui_ImplSDL2_NewFrame(window->GetWindow());
 		ImGui::NewFrame();
 
-		if (showStarbox) {
-			StarType starType = optionsWindow->GetOptions()->billboards ? BILLBOARDS : SPHERES;
-
-			// Draw PNG to screen (preview)
-			starArray.SaveToPNG(starType);
-			optionsWindow->Draw(0.016f);
-			
-			debugFramebuffer->Use();
-			window->Clear();
-			debugProgram->Use();
-			glDrawElements(GL_TRIANGLES, starArray.stars.size() * 6, GL_UNSIGNED_INT, 0);
-			debugFramebuffer->CheckForClicks(input);
-			debugFramebuffer->Stop();
-		}
-		else {
+		if (showStarbox)
+			starArray.DrawWrapped();
+		else
 			starArray.Draw(camera);
-			optionsWindow->Draw(0.016f);
-		}
+		optionsWindow->Draw(0.016f);
 
 		if (popupFileDialog) {
 			ImGui::OpenPopup("Save File...");
 			popupFileDialog = false;
 		}
 		if (file_dialog.showFileDialog("Save File...", imgui_addons::ImGuiFileBrowser::DialogMode::SAVE, ImVec2(700, 310), ".png")) {
-			StarType starType = optionsWindow->GetOptions()->billboards ? BILLBOARDS : SPHERES;
 			int imageWidth = optionsWindow->GetOptions()->imageSize;
 
 			if (imageWidth != pngFramebuffer->width) {
@@ -197,7 +182,7 @@ void World::Play()
 			
 			// Draw PNG to framebuffer
 			window->Clear();
-			starArray.SaveToPNG(starType);
+			starArray.DrawWrapped();
 
 			unsigned char * imageData = (unsigned char *) pngFramebuffer->GetData(0);
 

@@ -27,25 +27,40 @@ public:
 	void AddStar(Star * star);
 	void ClearStars();
 
-	void Update(StarType starType);
+	void Init(bool * starsAreBillboards);
+	void Update();
 	void Draw(Camera * camera);
-	void SaveToPNG(StarType starType);
+	void DrawWrapped();
 
 //private:
-	void MakeSpheres();
-	void MakeSpheresFaster();
-	void MakeBillboards();
-
 	GLuint vertexArray = 0;
 	GLuint vertexBuffer = 0;
-	GLuint colorBuffer = 0;
-	GLuint indexBuffer = 0;
 
-	GLProgram * sphereProgram;
-	GLProgram * billboardProgram;
+	bool * starsAreBillboards;
+	GLProgram * drawBillboardProgramPerspective;
+	GLProgram * drawBillboardProgramWrap;
+	GLProgram * drawSphereProgramPerspective;
+	GLProgram * drawSphereProgramWrap;
 
 	std::vector<Star> stars;
-	GLProgram * activeProgram;
+};
+
+// Draws a StarArray
+class StarArrayDrawerBillboards {
+public:
+	void Init(StarArray * sa);
+	void Update();
+	void Draw(Camera * camera);
+	void DrawWrapped();
+
+//private:
+	GLuint vertexArray = 0;
+	GLuint vertexBuffer = 0;
+
+	GLProgram * drawProgramPerspective;
+	GLProgram * drawProgramWrap;
+
+	StarArray * starArray;
 };
 
 #endif // STAR_H

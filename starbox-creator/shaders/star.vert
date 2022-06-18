@@ -1,14 +1,16 @@
 #version 330 core
 
-layout(location = 0) in vec3 pos;
-layout(location = 1) in vec4 color;
+layout(location = 0) in vec3 centerpos_worldspace;
+layout(location = 1) in float vSize;
+layout(location = 2) in vec4 vColor;
 
-out vec4 fragColor;
-
-uniform mat4 VP;
+out vec3 pos;
+out float size;
+out vec4 color;
 
 void main()
 {
-	gl_Position = VP * vec4(pos, 1.0);
-	fragColor = color;
+	pos = centerpos_worldspace;
+	size = vSize;
+	color = vColor;
 }
