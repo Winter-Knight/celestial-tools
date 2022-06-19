@@ -22,7 +22,7 @@ void World::Init(const char * systemFile)
 	
 	// Setup skypanorama
 	skypanorama = new SkyPanorama();
-	skypanorama->Init("starbox-creator/starfield2_4k.png");
+	skypanorama->Init(getStarboxFromFile(systemFile).c_str());
 	skypanorama->program = new GLProgram("shaders/skypanorama.vert", "shaders/skypanorama.frag");
 	
 	// OpenGL Sphere

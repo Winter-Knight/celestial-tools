@@ -27,21 +27,7 @@ public:
 	void AddStar(Star * star);
 	void ClearStars();
 
-	void Init(bool * starsAreBillboards);
-	void Update();
-	void Draw(Camera * camera);
-	void DrawWrapped();
-
 //private:
-	GLuint vertexArray = 0;
-	GLuint vertexBuffer = 0;
-
-	bool * starsAreBillboards;
-	GLProgram * drawBillboardProgramPerspective;
-	GLProgram * drawBillboardProgramWrap;
-	GLProgram * drawSphereProgramPerspective;
-	GLProgram * drawSphereProgramWrap;
-
 	std::vector<Star> stars;
 };
 
@@ -56,6 +42,24 @@ public:
 //private:
 	GLuint vertexArray = 0;
 	GLuint vertexBuffer = 0;
+
+	GLProgram * drawProgramPerspective;
+	GLProgram * drawProgramWrap;
+
+	StarArray * starArray;
+};
+
+class StarArrayDrawerSpheres {
+public:
+	void Init(StarArray * sa);
+	void Update();
+	void Draw(Camera * camera);
+	void DrawWrapped();
+
+//private:
+	GLuint vertexArray = 0;
+	GLuint vertexBuffer = 0;
+	GLuint indexBuffer = 0;
 
 	GLProgram * drawProgramPerspective;
 	GLProgram * drawProgramWrap;

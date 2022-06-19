@@ -10,7 +10,6 @@ void Texture::Init(std::string filename)
 		std::size_t dotPos = filename.find_last_of('.');
 		if (dotPos < filename.length()) {
 			std::string ext = filename.substr(dotPos);
-			printf("ext: %s\n", ext.c_str());
 			if (ext == ".pkm")
 				return InitETC2(filename.c_str());
 		}

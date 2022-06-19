@@ -1,16 +1,16 @@
 #version 330 core
 
-const int numIndices = 240;
-const int numVertices = 42;
+const int numIndices = 96;
+const int numVertices = 18;
 
 layout(points) in;
-layout(triangle_strip, max_vertices = 240) out;
+layout(triangle_strip, max_vertices = 96) out;
 
 in vec3 pos[];
 in float size[];
 in vec4 color[];
 
-//out vec4 fragColor;
+out vec4 fragColor;
 
 // Texture buffers?
 uniform vec3 vertices[numVertices];
@@ -53,7 +53,7 @@ void main()
 	if (!(lessthan01 && greaterthan09))
 		for (int i = 0; i < numIndices; i++) {
 			gl_Position = vec4(outputVertices[i], 0.0, 1.0);
-//			fragColor = color[0];
+			fragColor = color[0];
 			EmitVertex();
 			if (i % 3 == 2)
 				EndPrimitive();

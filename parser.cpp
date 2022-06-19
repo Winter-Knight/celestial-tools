@@ -2,7 +2,6 @@
 #include <sstream>
 
 #include "parser.h"
-#include "celestial.h"
 
 void parseSystemFile(std::vector<Celestial *> & celestials, const char * filename, const char * vertexshaderfile, const char * tessEshaderfile)
 {
@@ -41,6 +40,9 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 			celestials.push_back(celestial);
 			continue;
 		}
+		// New object that is not recognized by this function
+		else if (line[0] == '[')
+			celestial = NULL;
 		
 		if (!celestial)
 			continue;
@@ -103,7 +105,6 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 
 Camera * getCameraFromFile(const char * filename)
 {
-	
 	std::string line, fieldName;
 	std::stringstream ss;
 	Camera * camera = NULL;
@@ -133,6 +134,8 @@ Camera * getCameraFromFile(const char * filename)
 		
 		if (!camera)
 			continue;
+		else if (line[0] == '[')
+			break;
 		
 		ss.clear();
 		ss.str(line);
@@ -166,4 +169,49 @@ Camera * getCameraFromFile(const char * filename)
 	file.close();
 	
 	return camera;
+}
+
+std::string getStarboxFromFile(const char * filename)
+{
+	std::string line, fieldName;
+	std::stringstream ss;
+	bool foundStarbox = false;
+	std::string textureFilename;
+	
+	// Open file
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		printf("File %s failed to open. Exiting parse function.\n", filename);
+		return NULL;
+	}
+
+	while (!file.eof()) {
+		// Get line
+		getline(file, line);
+	
+		// If line is comment or empty then continue to next line
+		if (line.size() < 1 || line[0] == '#')
+			continue;
+
+		if (line == "[Starbox]") {
+			foundStarbox = true;
+			continue;
+		}
+		
+		if (!foundStarbox)
+			continue;
+		else if (line[0] == '[')
+			break;
+		
+		ss.clear();
+		ss.str(line);
+		ss >> fieldName;
+		if (fieldName == "Texture:") {
+			ss >> textureFilename;
+		}
+	}
+
+	file.close();
+	
+	return textureFilename;
 }

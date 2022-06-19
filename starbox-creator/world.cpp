@@ -35,12 +35,19 @@ void World::Init()
 	optionsWindow = new OptionsWindow();
 	optionsWindow->Init(window->GetWindow(), window->GetContext());
 	
-	// Init StarArray
-	starArray.drawSphereProgramPerspective = new GLProgram("shaders/star.vert", "shaders/starSpheresPerspective.geom", "shaders/flat.frag", true);
-	starArray.drawSphereProgramWrap = new GLProgram("shaders/star.vert", "shaders/starSpheresWrap.geom", "shaders/flat.frag", true);
-	starArray.drawBillboardProgramPerspective = new GLProgram("shaders/star.vert", "shaders/starBillboardsPerspective.geom", "shaders/circle.frag", true);
-	starArray.drawBillboardProgramWrap = new GLProgram("shaders/star.vert", "shaders/starBillboardsWrap.geom", "shaders/circle.frag", true);
-	starArray.Init(&optionsWindow->GetOptions()->billboards);
+	// Init StarArray Drawers
+	starArrayDrawerBillboards.drawProgramPerspective =
+		new GLProgram("shaders/starBillboards.vert", "shaders/starBillboardsPerspective.geom", "shaders/circle.frag", true);
+	starArrayDrawerBillboards.drawProgramWrap =
+		new GLProgram("shaders/starBillboards.vert", "shaders/starBillboardsWrap.geom", "shaders/circle.frag", true);
+	starArrayDrawerBillboards.Init(&starArray);
+
+	starArrayDrawerSpheres.drawProgramPerspective =
+		new GLProgram("shaders/starSpheresPerspective.vert", "shaders/flat.frag");
+	starArrayDrawerSpheres.drawProgramWrap =
+		new GLProgram("shaders/starSpheresWrap.vert", "shaders/starSpheresWrap.geom", "shaders/flat.frag", true);
+
+	starArrayDrawerSpheres.Init(&starArray);
 
 	// Stars
 	twister.Init();
@@ -109,13 +116,14 @@ void World::UpdateStars()
 		starArray.AddStar(&star);
 	}
 
-	starArray.Update();
+	starArrayDrawerBillboards.Update();
+	starArrayDrawerSpheres.Update();
 }
 
 void World::Play()
 {
 	SDL_Event event;
-	bool showStarbox = false;
+	bool showStarbox = true;
 	bool popupFileDialog = false;
 	imgui_addons::ImGuiFileBrowser file_dialog;
 
@@ -149,7 +157,7 @@ void World::Play()
 		if (optionsWindow->GetActions()->saveStarbox)
 			popupFileDialog = true;
 		
-		if (optionsWindow->GetActions()->previewStarbox)
+		if (optionsWindow->GetActions()->previewStarbox || input->lastKey == SDLK_F6)
 			showStarbox = !showStarbox;
 
 
@@ -159,10 +167,18 @@ void World::Play()
 		ImGui_ImplSDL2_NewFrame(window->GetWindow());
 		ImGui::NewFrame();
 
-		if (showStarbox)
-			starArray.DrawWrapped();
-		else
-			starArray.Draw(camera);
+		if (showStarbox) {
+			if (optionsWindow->GetOptions()->billboards)
+				starArrayDrawerBillboards.DrawWrapped();
+			else
+				starArrayDrawerSpheres.DrawWrapped();
+		}
+		else {
+			if (optionsWindow->GetOptions()->billboards)
+				starArrayDrawerBillboards.Draw(camera);
+			else
+				starArrayDrawerSpheres.Draw(camera);
+		}
 		optionsWindow->Draw(0.016f);
 
 		if (popupFileDialog) {
@@ -182,7 +198,11 @@ void World::Play()
 			
 			// Draw PNG to framebuffer
 			window->Clear();
-			starArray.DrawWrapped();
+			
+			if (optionsWindow->GetOptions()->billboards)
+				starArrayDrawerBillboards.DrawWrapped();
+			else
+				starArrayDrawerSpheres.DrawWrapped();
 
 			unsigned char * imageData = (unsigned char *) pngFramebuffer->GetData(0);
 

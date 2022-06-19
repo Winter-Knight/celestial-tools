@@ -24,6 +24,8 @@ private:
 	Camera * camera;
 	
 	StarArray starArray;
+	StarArrayDrawerBillboards starArrayDrawerBillboards;
+	StarArrayDrawerSpheres starArrayDrawerSpheres;
 	Twister twister;
 
 	// Debugging

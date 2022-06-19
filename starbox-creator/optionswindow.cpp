@@ -76,7 +76,7 @@ void OptionsWindow::Draw(float delta)
 	ImGui::Separator();
 	actions.updateStars = ImGui::Button("Update Stars (F5)");
 	ImGui::SameLine();
-	actions.previewStarbox = ImGui::Button("Preview Skybox");
+	actions.previewStarbox = ImGui::Button("Preview Skybox (F6)");
 	ImGui::SameLine();
 	actions.saveStarbox = ImGui::Button("Save Skybox");
 
