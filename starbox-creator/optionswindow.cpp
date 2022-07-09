@@ -76,7 +76,7 @@ void OptionsWindow::Draw(float delta)
 	ImGui::Separator();
 	actions.updateStars = ImGui::Button("Update Stars (F5)");
 	ImGui::SameLine();
-	actions.previewStarbox = ImGui::Button("Preview Skybox (F6)");
+	actions.previewStarbox = ImGui::Checkbox("Preview Skybox (F6)", &options.previewStarbox);
 	ImGui::SameLine();
 	actions.saveStarbox = ImGui::Button("Save Skybox");
 
@@ -158,6 +158,35 @@ void OptionsWindow::Load()
 	file.close();
 }
 
+const char * OptionsWindow::GetSaveText()
+{
+	static std::string saveText;
+	std::stringstream ss;
+
+	ss << "seed: " << options.seed;
+	ss << "\nnumStars: " << options.numStars;
+	ss << "\nbillboards: " << options.billboards;
+	
+	ss << "\naverageStarSizeNormalDistribution: " << options.averageStarSizeNormalDistribution;
+	ss << "\naverageStarSize: " << options.averageStarSize;
+	ss << "\naverageStarSizeDeviation: " << options.averageStarSizeDeviation;
+
+	ss << "\naverageStarDistanceNormalDistribution: " << options.averageStarDistanceNormalDistribution;
+	ss << "\naverageStarDistance: " << options.averageStarDistance;
+	ss << "\naverageStarDistanceDeviation: " << options.averageStarDistanceDeviation;
+	
+	ss << "\naverageColorNormalDistribution: " << options.averageColorNormalDistribution;
+	ss << "\naverageColor: " << options.averageColor.r << " " <<
+		options.averageColor.g << " " << options.averageColor.b << " " << options.averageColor.a;
+	ss << "\naverageColorDeviation: " << options.averageColorDeviation.r << " " <<
+		options.averageColorDeviation.g << " " << options.averageColorDeviation.b << " " << options.averageColorDeviation.a;
+	
+	ss << "\nimageSize: " << options.imageSize << std::endl;
+	
+	saveText = ss.str();
+	return saveText.c_str();
+}	
+
 void OptionsWindow::Save()
 {
 	FILE * fp = fopen(optionsFile, "w");
@@ -167,24 +196,7 @@ void OptionsWindow::Save()
 		return;
 	}
 
-	fprintf(fp, "seed: %u\n", options.seed);
-	fprintf(fp, "numStars: %u\n", options.numStars);
-	fprintf(fp, "billboards: %d\n", options.billboards);
-
-	fprintf(fp, "averageStarSizeNormalDistribution: %d\n", options.averageStarSizeNormalDistribution);
-	fprintf(fp, "averageStarSize: %f\n", options.averageStarSize);
-	fprintf(fp, "averageStarSizeDeviation: %f\n", options.averageStarSizeDeviation);
-	
-	fprintf(fp, "averageStarDistanceNormalDistribution: %d\n", options.averageStarDistanceNormalDistribution);
-	fprintf(fp, "averageStarDistance: %f\n", options.averageStarDistance);
-	fprintf(fp, "averageStarDistanceDeviation: %f\n", options.averageStarDistanceDeviation);
-	
-	fprintf(fp, "averageColorNormalDistribution: %d\n", options.averageColorNormalDistribution);
-	fprintf(fp, "averageColor: %f %f %f %f\n", options.averageColor.r, options.averageColor.g, options.averageColor.b, options.averageColor.a);
-	fprintf(fp, "averageColorDeviation: %f %f %f %f\n", options.averageColorDeviation.r,
-		options.averageColorDeviation.g, options.averageColorDeviation.b, options.averageColorDeviation.a);
-	
-	fprintf(fp, "imageSize: %d\n", options.imageSize);
+	fprintf(fp, "%s", GetSaveText());
 	
 	fclose(fp);
 }

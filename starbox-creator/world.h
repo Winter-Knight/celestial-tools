@@ -6,6 +6,7 @@
 #include "star.h"
 #include "optionswindow.h"
 #include "framebuffer.h"
+#include "texturerect.h"
 #include "../twister-std.h"
 
 class World {
@@ -16,6 +17,7 @@ public:
 
 private:
 	void UpdateStars();
+	void UpdatePreviewStarbox();
 
 	Window * window;
 	InputHandler * input;
@@ -27,6 +29,10 @@ private:
 	StarArrayDrawerBillboards starArrayDrawerBillboards;
 	StarArrayDrawerSpheres starArrayDrawerSpheres;
 	Twister twister;
+
+	// Preview
+	Framebuffer * previewFramebuffer;
+	TextureRect textureRect;
 
 	// Debugging
 	GLProgram * debugProgram;

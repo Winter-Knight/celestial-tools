@@ -1,16 +1,23 @@
+#include <sstream>
+
 #include "celestial.h"
 
 #include "../gl-debug.h"
 
-void Orbital::Update(InputHandler * input, float time)
+void Orbital::Update(InputHandler * input, long long time)
 {
 	if (input->paused)
 		return;
 
 	if (!semi_major_axis)
 		semi_major_axis = distance;
-	
-	float angle_in_radians = (time + period_offset) / period * 2 * glm::pi<float>();
+
+	long long orbitTime, rotationTime;
+	orbitTime = rotationTime = time;
+	while (orbitTime > period)
+		orbitTime -= period;
+
+	float angle_in_radians = float(orbitTime + period_offset) / period * 2 * glm::pi<float>();
 	float semi_minor_axis = semi_major_axis * sqrt(1 - eccentricity * eccentricity);
 
 	float b2 = semi_minor_axis * semi_minor_axis;
@@ -30,13 +37,11 @@ void Orbital::Update(InputHandler * input, float time)
 	pos.x += focus_center_distance;
 
 	
-//	printf("pos: [%8.2f][%8.2f][%8.2f],   semi_major_axis: %f,   tan2: %f, tan(a): %f\n", pos.x, pos.y, pos.z, semi_major_axis, tan2, tan(angle_in_radians));
-
-//	pos.x = orbitObject->pos.x + cos(angle_in_radians) * distance;
-//	pos.z = orbitObject->pos.z - sin(angle_in_radians) * distance;
-//	printf("Orbital location: [%5.2f][%5.2f][%5.2f]\n", pos.x, pos.y, pos.z);
-	if (rotation_period)
-		rotation = time / rotation_period * 2 * glm::pi<float>();
+	if (rotation_period) {
+		while (rotationTime > rotation_period)
+			rotationTime -= rotation_period;
+		rotation = float(rotationTime) / rotation_period * 2 * glm::pi<float>();
+	}
 }
 
 void Celestial::AddTexture(const char * filename)
@@ -50,6 +55,7 @@ void Celestial::AddTexture(const char * filename)
 void Celestial::Draw(Camera * camera)
 {
 	program->Use();
+
 	glm::mat4 R1 = glm::rotate(glm::mat4(1.0f), glm::radians(tilt), glm::vec3(0.0f, 0.0f, -1.0f));
 	glm::mat4 R2 = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 Rotations = R1 * R2;
@@ -59,14 +65,33 @@ void Celestial::Draw(Camera * camera)
 	program->SetUniformMatrix4f("VP", &VP[0][0]);
 	program->SetUniformMatrix4f("Rotations", &Rotations[0][0]);
 	program->SetUniformMatrix4f("Translation", &T[0][0]);
-	
+
 	program->SetUniform3f("centerPos_worldspace", &pos[0]);
 	program->SetUniformf("size", size);
+	
+	std::stringstream ss;
+	
+	for (unsigned int i = 0; i < lightArray.lights.size(); i++) {
+		ss.str("");
+		ss << "lights[" << i << "].pos";
+		program->SetUniform4f(ss.str().c_str(), &lightArray.lights[i].pos[0]);
+		
+		ss.str("");
+		ss << "lights[" << i << "].color";
+		program->SetUniform4f(ss.str().c_str(), &lightArray.lights[i].color[0]);
+	}
 
 	for (unsigned int i = 0; i < textures.size(); i++)
 		textures[i].Bind(program, i);
 
-	glDrawElements(GL_TRIANGLES, sphere.numIndices, GL_UNSIGNED_INT, 0);
+	if (shape == SPHERE) {
+		sphere.Bind();
+		glDrawElements(GL_TRIANGLES, sphere.numIndices, GL_UNSIGNED_INT, 0);
+	}
+	else if (shape == PLANE) {
+		plane.Bind();
+		glDrawElements(GL_TRIANGLES, plane.numIndices, GL_UNSIGNED_INT, 0);
+	}
 }
 
 void Celestial::Draw(Camera * camera, SphereType sphereType)
@@ -96,3 +121,5 @@ void Celestial::Draw(Camera * camera, SphereType sphereType)
 }
 
 GLSphere Celestial::sphere;
+GLPlane Celestial::plane;
+LightArray Celestial::lightArray;

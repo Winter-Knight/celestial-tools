@@ -25,12 +25,19 @@ void World::Init(const char * systemFile)
 	skypanorama->Init(getStarboxFromFile(systemFile).c_str());
 	skypanorama->program = new GLProgram("shaders/skypanorama.vert", "shaders/skypanorama.frag");
 	
-	// OpenGL Sphere
+	// OpenGL Shapes
 	Celestial::sphere.Init(4);
+	Celestial::plane.Init();
 
 	// Load celestial objects
 //	parseSystemFile(celestials, systemFile, "shaders/celestial.vert", "shaders/celestial.tes");
 	parseSystemFile(celestials, systemFile);
+	
+	// Init light array (array of celestial bodies that emit light)
+	for (unsigned int i = 0; i < celestials.size(); i++)
+		if (celestials[i]->light.r > 0.0f || celestials[i]->light.g > 0.0f || celestials[i]->light.b > 0.0f)
+			Celestial::lightArray.indexList.push_back(i);
+		
 
 	// Set up debugging:
 	
@@ -41,92 +48,82 @@ void World::Init(const char * systemFile)
 	glDisable(GL_CULL_FACE);
 }
 
-void World::Play()
+void World::Update(long long time)
 {
-	unsigned int i;
-	float time = 0.0f;
-	
-	GLProgram marioCPUSphereProgram = *celestials[1]->program;
-	GLProgram marioTessSphereProgram("shaders/celestial.vert", NULL, "shaders/celestial.tes", "shaders/gas.frag");
-	SphereType sphereType = CPUSPHERE;
+	for (unsigned int i = 0; i < celestials.size(); i++)
+		celestials[i]->Update(input, time);
 
-	while (!input->HandleEvents(window)) {
-		if (!input->paused)
-			time += 16.0f / (60.0f * 60.0f * 1000.0f);
-		for (i = 0; i < celestials.size(); i++)
-			celestials[i]->Update(input, time);
+	camera->Update(input);
 
-		camera->Update(input);
-
-		if (input->lastKey == SDLK_o) {
-			if (sphereType == TESSSPHERE) {
-				sphereType = CPUSPHERE;
-				celestials[1]->program = &marioCPUSphereProgram;
-			}
-			else if (sphereType == CPUSPHERE) {
-				sphereType = TESSSPHERE;
-				celestials[1]->program = &marioTessSphereProgram;
-			}
-		}
-
-		window->Clear();
-
-		// Draw all objects
-		for (i = 0; i < celestials.size(); i++)
-//			celestials[i]->Draw(camera, CPUSPHERE);
-			celestials[i]->Draw(camera, sphereType);
-
-//		skybox->Draw(camera);
-		skypanorama->Draw(camera);
-
-		window->Swap();
-
-		// Now write into debug buffer
-		
-		debugFramebuffer->Use();
-		
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		Celestial::sphere.Bind();
-		
-		debugProgram->Use();
-
-		glm::mat4 R1 = glm::rotate(glm::mat4(1.0f), glm::radians(celestials[1]->tilt), glm::vec3(0.0f, 0.0f, -1.0f));
-		glm::mat4 R2 = glm::rotate(glm::mat4(1.0f), celestials[1]->rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::mat4 Rotations = R1 * R2;
-		glm::mat4 T = glm::translate(glm::mat4(1.0f), celestials[1]->pos);
-		glm::mat4 VP = camera->perspective * camera->view;
-
-		debugProgram->SetUniformMatrix4f("VP", &VP[0][0]);
-		debugProgram->SetUniformMatrix4f("Rotations", &Rotations[0][0]);
-		debugProgram->SetUniformMatrix4f("Translation", &T[0][0]);
-
-		debugProgram->SetUniform3f("centerPos_worldspace", &celestials[1]->pos[0]);
-		debugProgram->SetUniformf("size", celestials[1]->size);
-
-		for (unsigned int i = 0; i < celestials[1]->textures.size(); i++)
-			celestials[1]->textures[i].Bind(debugProgram, i);
-
-		glDrawElements(GL_TRIANGLES, Celestial::sphere.numIndices, GL_UNSIGNED_INT, 0);
-
-		debugFramebuffer->CheckForClicks(input);
-		debugFramebuffer->Stop();
-
-		if (input->lastKey == SDLK_g) {
-			if (SDL_GetRelativeMouseMode())
-				SDL_SetRelativeMouseMode(SDL_FALSE);
-			else
-				SDL_SetRelativeMouseMode(SDL_TRUE);
-		}
-		
-		static int wireframe = 0;
-		if (input->lastKey == SDLK_z) {
-			wireframe = !wireframe;
-			if (wireframe)
-				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			else
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-			
+	if (input->lastKey == SDLK_g) {
+		if (SDL_GetRelativeMouseMode())
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+		else
+			SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
+	
+	static GLenum wireframe = GL_FILL;
+	if (input->lastKey == SDLK_z) {
+		wireframe = (wireframe == GL_FILL) ? GL_LINE : GL_FILL;
+		glPolygonMode(GL_FRONT_AND_BACK, wireframe);
+	}
+
+	// Update light array (array of celestial bodies that emit light)
+	Celestial::lightArray.ClearLights();
+	for (unsigned int i = 0; i < Celestial::lightArray.indexList.size(); i++) {
+		unsigned int index = Celestial::lightArray.indexList[i];
+		Celestial::lightArray.AddLight(glm::vec4(celestials[index]->pos, 0.0f), celestials[index]->light);
+	}
+}
+
+#include "../gl-debug.h"
+
+void World::DrawPerspective(int celestialID)
+{
+	static GLProgram marioCPUSphereProgram = *celestials[1]->program;
+	static GLProgram marioTessSphereProgram("shaders/celestial.vert", NULL, "shaders/celestial.tes", "shaders/mario.frag");
+	static SphereType sphereType = CPUSPHERE;
+
+	if (input->lastKey == SDLK_o) {
+		if (sphereType == TESSSPHERE) {
+			sphereType = CPUSPHERE;
+			celestials[1]->program = &marioCPUSphereProgram;
+		}
+		else if (sphereType == CPUSPHERE) {
+			sphereType = TESSSPHERE;
+			celestials[1]->program = &marioTessSphereProgram;
+		}
+	}
+	
+	// Increase or decrease the tilt of Rosa for debugging
+	if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
+		celestials[3]->tilt += 0.1f;
+	else if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_DOWN])
+		celestials[3]->tilt -= 0.1f;
+
+	Camera drawCam;
+	if (celestialID >= 0) {
+		drawCam.perspective = camera->perspective;
+		drawCam.pos = celestials[celestialID]->pos;
+		drawCam.dir = camera->dir;
+		drawCam.up = camera->up;
+		drawCam.CalculateView();
+	
+		glm::mat4 R1 = glm::rotate(glm::mat4(1.0f), glm::radians(celestials[celestialID]->tilt), glm::vec3(0.0f, 0.0f, -1.0f));
+		glm::mat4 R2 = glm::rotate(glm::mat4(1.0f), celestials[celestialID]->rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::mat4 Rotations = R1 * R2;
+		glm::mat4 T = glm::translate(glm::mat4(1.0f), celestials[celestialID]->pos);
+		glm::mat4 view = glm::lookAt(glm::vec3(0.0f), drawCam.dir, drawCam.up);
+	//	drawCam.view = Rotations * drawCam.view;
+	//	drawCam.view = drawCam.view * Rotations;
+		drawCam.view = view * glm::inverse(Rotations) * glm::inverse(T);
+	}
+	else
+		drawCam = *camera;
+
+	// Draw all objects
+	skypanorama->Draw(&drawCam);
+	for (unsigned int i = 0; i < celestials.size(); i++)
+		if ((int) i != celestialID)
+			celestials[i]->Draw(&drawCam, sphereType);
 }

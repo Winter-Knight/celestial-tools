@@ -22,6 +22,9 @@ struct Options {
 	glm::vec4 averageColorDeviation;
 	
 	int imageSize;
+
+	// Running options. Don't save.
+	bool previewStarbox;
 };
 
 struct Actions {
@@ -43,6 +46,7 @@ public:
 
 	void Load();
 	void Save();
+	const char * GetSaveText();
 
 private:
 	// The options

@@ -1,7 +1,7 @@
 # Starbox creator creates the background skybox with just stars
 
 BIN = starbox-creator
-SOURCE_FILES= main.cpp ../window.cpp ../input.cpp ../sphere.cpp ../camera.cpp ../framebuffer.cpp world.cpp star.cpp optionswindow.cpp
+SOURCE_FILES= main.cpp ../window.cpp ../input.cpp ../sphere.cpp ../camera.cpp ../framebuffer.cpp world.cpp star.cpp optionswindow.cpp texturerect.cpp
 SOURCE_FILES+= pngsaver.cpp imguifilebrowser/ImGuiFileBrowser.cpp
 HEADERS = $(shell ls *.h ../*.h imguifilebrowser/*.h)
 

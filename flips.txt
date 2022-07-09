@@ -3,6 +3,7 @@ Name: Sun
 Position: 0 0 0
 Size: 6.960
 Shader: shaders/sun.frag
+Light: 1 1 1
 
 [Orbital]
 Name: Mario
@@ -13,8 +14,8 @@ Size: 0.069911
 Orbits: 0 #Sun
 Texture: /mnt/michelangelo/firefox/satara_night_no_lamps.jpg
 #Texture: starbox-creator/starfield3.pkm
-Shader: shaders/gas.frag
-#Shader: shaders/starbox.frag
+Shader: shaders/mario.frag
+Light: 0.3 0.05 0.05
 
 [Orbital]
 Name: Shadow
@@ -31,8 +32,11 @@ Name: Rosa
 Distance: 0.6711
 Eccentricity: 0.0094
 Period: 0.016666
+Tilt: 20
+Rotation-Period: 0.003
 Size: 0.031216
 Orbits: 1
+Shape: plane
 Shader: shaders/rosa.frag
 
 [Orbital]

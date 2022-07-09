@@ -12,7 +12,6 @@ in vec4 color[];
 
 out vec4 fragColor;
 
-// Texture buffers?
 uniform vec3 vertices[numVertices];
 uniform uint indices[numIndices];
 

@@ -54,15 +54,20 @@ void World::Init()
 	optionsWindow->Load();
 	UpdateStars();
 
-	// Set up debugging:
+/*	// Set up debugging:
 	debugProgram = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards-debug.frag");
 	debugFramebuffer = new Framebuffer();
 	debugFramebuffer->Init(3, 3, GL_FLOAT, 2048, 2048);
-
+*/
 	// Set up PNG Framebuffer
 	pngFramebuffer = new Framebuffer();
 	int imageSize = optionsWindow->GetOptions()->imageSize;
 	pngFramebuffer->Init(1, 4, GL_UNSIGNED_BYTE, imageSize, imageSize / 2);
+
+	// Set up Preview Framebuffer
+	previewFramebuffer = new Framebuffer();
+	previewFramebuffer->Init(1, 4, GL_UNSIGNED_BYTE, 2048, 2048);
+	textureRect.Init(previewFramebuffer->colorTextures[0]);
 
 	SDL_SetRelativeMouseMode(SDL_FALSE);
 }
@@ -120,12 +125,27 @@ void World::UpdateStars()
 	starArrayDrawerSpheres.Update();
 }
 
+void World::UpdatePreviewStarbox()
+{
+	previewFramebuffer->Use();
+	glViewport(0, 0, previewFramebuffer->width, previewFramebuffer->height);
+	window->Clear();
+	if (optionsWindow->GetOptions()->billboards)
+		starArrayDrawerBillboards.DrawWrapped();
+	else
+		starArrayDrawerSpheres.DrawWrapped();
+
+	previewFramebuffer->Stop();
+	glViewport(0, 0, input->windowWidth, input->windowHeight);
+}
+
 void World::Play()
 {
 	SDL_Event event;
-	bool showStarbox = true;
+	bool showStarbox = false;
 	bool popupFileDialog = false;
 	imgui_addons::ImGuiFileBrowser file_dialog;
+	bool billboardsLastFrame = optionsWindow->GetOptions()->billboards;
 
 	while (!input->quit) {
 
@@ -151,14 +171,24 @@ void World::Play()
 		if (SDL_GetRelativeMouseMode())
 			camera->Update(input);
 
-		if (optionsWindow->GetActions()->updateStars || input->lastKey == SDLK_F5)
+		if (optionsWindow->GetActions()->updateStars || input->lastKey == SDLK_F5) {
 			UpdateStars();
+			UpdatePreviewStarbox();
+		}
 
 		if (optionsWindow->GetActions()->saveStarbox)
 			popupFileDialog = true;
 		
-		if (optionsWindow->GetActions()->previewStarbox || input->lastKey == SDLK_F6)
-			showStarbox = !showStarbox;
+		if (optionsWindow->GetActions()->previewStarbox || input->lastKey == SDLK_F6) {
+			showStarbox = optionsWindow->GetOptions()->previewStarbox;
+			if (showStarbox)
+				UpdatePreviewStarbox();
+		}
+		
+		if (optionsWindow->GetOptions()->billboards != billboardsLastFrame) {
+			billboardsLastFrame = optionsWindow->GetOptions()->billboards;
+			UpdatePreviewStarbox();
+		}
 
 
 		window->Clear();
@@ -168,10 +198,7 @@ void World::Play()
 		ImGui::NewFrame();
 
 		if (showStarbox) {
-			if (optionsWindow->GetOptions()->billboards)
-				starArrayDrawerBillboards.DrawWrapped();
-			else
-				starArrayDrawerSpheres.DrawWrapped();
+			textureRect.Draw();
 		}
 		else {
 			if (optionsWindow->GetOptions()->billboards)
@@ -204,12 +231,13 @@ void World::Play()
 			else
 				starArrayDrawerSpheres.DrawWrapped();
 
-			unsigned char * imageData = (unsigned char *) pngFramebuffer->GetData(0);
+			const unsigned char * imageData = (const unsigned char *) pngFramebuffer->GetData(0);
+			const char * creationSettingsText = optionsWindow->GetSaveText();
 
 			pngFramebuffer->Stop();
 			glViewport(0, 0, input->windowWidth, input->windowHeight);
 
-			SaveToPNG(file_dialog.selected_path.c_str(), 4, 8, imageWidth, imageWidth / 2, imageData);
+			SaveToPNG(file_dialog.selected_path.c_str(), 4, 8, imageWidth, imageWidth / 2, imageData, creationSettingsText);
 
 			delete[] imageData;
 		}

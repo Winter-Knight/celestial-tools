@@ -70,7 +70,7 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		}
 		else if (fieldName == "Period:") {
 			ss >> fValue;
-			((Orbital *) celestial)->period = fValue;
+			((Orbital *) celestial)->period = fValue * 60 * 60 * 1000000;
 		}
 		else if (fieldName == "Tilt:") {
 			ss >> fValue;
@@ -92,11 +92,22 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		}
 		else if (fieldName == "Period-Offset:") {
 			ss >> fValue;
-			((Orbital *) celestial)->period_offset = fValue;
+			((Orbital *) celestial)->period_offset = fValue * 60 * 60 * 1000000;
 		}
 		else if (fieldName == "Rotation-Period:") {
 			ss >> fValue;
-			celestial->rotation_period = fValue;
+			celestial->rotation_period = fValue * 60 * 60 * 1000000;
+		}
+		else if (fieldName == "Shape:") {
+			ss >> strValue;
+			if (strValue == "sphere")
+				celestial->shape = SPHERE;
+			else if (strValue == "plane")
+				celestial->shape = PLANE;
+		}
+		else if (fieldName == "Light:") {
+			ss >> floats[0] >> floats[1] >> floats[2];
+			celestial->light = glm::vec4(floats, 1.0f);
 		}
 	}
 	

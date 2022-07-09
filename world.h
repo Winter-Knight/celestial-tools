@@ -13,7 +13,9 @@ class World {
 public:
 	World(Window * w, InputHandler * i) { window = w; input = i; }
 	void Init(const char * systemFile);
-	void Play();
+	void Update(long long time);
+	void DrawPerspective(int celestialID);
+	Camera * GetCamera() { return camera; }
 
 private:
 	Window * window;
