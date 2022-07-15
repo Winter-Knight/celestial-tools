@@ -3,7 +3,7 @@
 
 #include "camera.h"
 
-#include "../gl-program.h"
+#include "glprogram.h"
 
 class Skybox {
 public:

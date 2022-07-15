@@ -2,7 +2,7 @@
 #define TEXTURERECT_H
 
 #include "window.h"
-#include "../gl-program.h"
+#include "glprogram.h"
 
 class TextureRect {
 public:

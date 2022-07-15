@@ -1,5 +1,6 @@
 #include <fstream>
 #include <sstream>
+#include <map>
 
 #include "parser.h"
 
@@ -13,11 +14,13 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 	float fValue;
 	glm::vec3 floats;
 	int iValue;
+	
+	std::map<std::string, int> celestialIDMap;
 
 	// Open file
 	std::ifstream file(filename);
 	if (!file.is_open()) {
-		printf("File %s failed to open. Exiting parse function.\n", filename);
+		printf("Error: Failed to open solar system file: %s! Exiting parse function!\n", filename);
 		return;
 	}
 
@@ -52,6 +55,10 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		ss.clear();
 		ss.str(line);
 		ss >> fieldName;
+		if (fieldName == "Name:") {
+			ss >> strValue;
+			celestialIDMap[strValue] = celestials.size() - 1;
+		}
 		if (fieldName == "Position:") {
 			ss >> floats[0] >> floats[1] >> floats[2];
 			celestial->pos = floats;
@@ -77,9 +84,8 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 			celestial->tilt = fValue;
 		}
 		else if (fieldName == "Orbits:") {
-			// TODO: This is a temporary fix so that orbits can be implemented quickly.
-			// Should use names instead of object indexes.
-			ss >> iValue;
+			ss >> strValue;
+			iValue = celestialIDMap[strValue];
 			((Orbital *) celestial)->orbitObject = celestials[iValue];
 		}
 		else if (fieldName == "Texture:") {

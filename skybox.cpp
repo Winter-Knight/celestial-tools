@@ -3,6 +3,33 @@
 
 void Skybox::Init()
 {
+	// Texture
+
+	const char * filenames[] = { "posx.png", "negx.png", "posy.png", "negy.png",
+		"posz.png", "negz.png" };
+	
+	glGenTextures(1, &textureBuffer);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureBuffer);
+
+	SDL_Surface * image;
+	std::string dir = dirName;
+	dir += "/";
+
+	for (unsigned int i = 0; i < 6; i++) {
+		std::string filename = dir + filenames[i];
+		image = LoadImage(filename.c_str());
+		if (!image) {
+			glDeleteTextures(1, &textureBuffer);
+			textureBuffer = 0;
+			return;
+		}
+
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, image->w, image->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+		SDL_FreeSurface(image);
+	}
+	
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
 	// Vertex Array
 
 	glGenVertexArrays(1, &vertexArray);
@@ -40,28 +67,6 @@ void Skybox::Init()
 	                       4, 6, 5, // Front
 	                       6, 4, 7 };
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	
-
-	// Texture
-
-	const char * filenames[] = { "posx.png", "negx.png", "posy.png", "negy.png",
-		"posz.png", "negz.png" };
-	
-	glGenTextures(1, &textureBuffer);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureBuffer);
-
-	SDL_Surface * image;
-	std::string dir = dirName;
-	dir += "/";
-
-	for (unsigned int i = 0; i < 6; i++) {
-		std::string filename = dir + filenames[i];
-		image = LoadImage(filename.c_str());
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, image->w, image->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
-		SDL_FreeSurface(image);
-	}
-	
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 void Skybox::Draw(Camera * camera)

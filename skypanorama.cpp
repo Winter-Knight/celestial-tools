@@ -2,6 +2,7 @@
 
 #include "camera.h"
 #include "skypanorama.h"
+#include "resource-handler.h"
 
 void SkyPanorama::Init(const char * filename)
 {
@@ -31,7 +32,7 @@ void SkyPanorama::Init(const char * filename)
 
 	// Texture
 	
-	texture.Init(filename);
+	texture = getTexture(filename);
 }
 
 void SkyPanorama::Draw(Camera * camera)

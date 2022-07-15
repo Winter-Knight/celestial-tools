@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <string>
 
 #include "window.h"
 
@@ -55,11 +56,12 @@ Window::Window()
 
 void Window::InitOpenGL()
 {
-	glClearColor(0.0f, 0.0f, 0.4f, 1.0f);
+	glClearColor(0.01f, 0.01f, 0.05f, 1.0f);
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glPatchParameteri(GL_PATCH_VERTICES, 1);
 	float sphereDetails[] = { SPHERE_DETAILS, SPHERE_DETAILS, SPHERE_DETAILS, SPHERE_DETAILS };
@@ -91,9 +93,19 @@ int Window::CheckSDLError(const char * str)
 
 int Window::CheckGLError(const char * str)
 {
+	static std::string lastStr;
+	static GLenum lastError = GL_NO_ERROR;
+
 	GLenum error = glGetError();
-	if (error)
+	
+	if (lastStr == str && lastError == error)
+		return error;
+
+	if (error) {
 		printf("%s - OpenGL Error: %04x\n", str, error);
+		lastStr = str;
+		lastError = error;
+	}
 	return error;
 }
 

@@ -2,7 +2,7 @@
 #define SKYPANORAMA_H
 
 #include "texture.h"
-#include "../gl-program.h"
+#include "glprogram.h"
 
 class SkyPanorama {
 public:

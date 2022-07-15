@@ -1,8 +1,7 @@
 #version 330 core
 
-const int numLights = 2;
+const int numLights = 1;
 
-in vec3 uv;
 in vec3 pos_worldspace;
 in vec3 normal_worldspace;
 
@@ -13,7 +12,6 @@ struct Light {
 	vec4 color;
 };
 uniform Light lights[numLights];
-uniform sampler2D texture0;
 
 vec4 lighting(vec4 albedo)
 {
@@ -27,7 +25,7 @@ vec4 lighting(vec4 albedo)
 		if (cosTheta > 0.25)
 			color += albedo * lights[i].color;
 		else if (cosTheta > 0.0)
-			color += albedo * cosTheta * 4.0 * lights[i].color;
+			color += albedo * cosTheta * lights[i].color;
 	}
 
 	return color;
@@ -35,7 +33,5 @@ vec4 lighting(vec4 albedo)
 
 void main()
 {
-	vec4 color = texture(texture0, uv.ts);
-	color = vec4(pow(color.rgb, vec3(3)) * 2.0, 1.0);
-	fragColor = lighting(color);
+	fragColor = lighting(vec4(0.0, 0.53, 0.84, 1.0));
 }

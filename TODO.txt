@@ -5,10 +5,6 @@
 		- Another moon with tiny moons of its own
 		- A planet with a close orbit that can only be seen for a brief period per year
 	- I want the sun to look like moving molten lava
-* Cache shaders so they don't have to be compiled multiple times
-* Cache textures so they don't have to be loaded multiple times
-* Make a free system loosely based on sol system
-* Make sure images are freely licensed and correctly documented
 * Make as easy to use library
 * publish library to github
 * Documentation
@@ -16,3 +12,7 @@
 	- Make a starbox (SKIP THIS TUTORIAL: Use the starbox found in /images/)
 	- Make a solar system (SKIP THIS TUTORIAL: Use default system loosely based on sol system)
 	- Incorporate system into your project (SDL2 and GLFW)
+
+* Provide time to shaders so they can be animated.
+	- Animate Sun
+	- Animate Mario

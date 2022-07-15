@@ -11,9 +11,8 @@ Distance: 778
 Period: 8760
 Tilt: 45
 Size: 0.069911
-Orbits: 0 #Sun
-Texture: /mnt/michelangelo/firefox/satara_night_no_lamps.jpg
-#Texture: starbox-creator/starfield3.pkm
+Orbits: Sun
+Texture: starbox-creator/starfield4_4k.png
 Shader: shaders/mario.frag
 Light: 0.3 0.05 0.05
 
@@ -23,7 +22,7 @@ Distance: 0.4218
 Eccentricity: 0.0041
 Period: 0.008333
 Size: 0.036306
-Orbits: 1
+Orbits: Mario
 Texture: images/callisto_4k_map_by_jcpag2010_dc4fjip.png
 Shader: shaders/shadow.frag
 
@@ -35,7 +34,7 @@ Period: 0.016666
 Tilt: 20
 Rotation-Period: 0.003
 Size: 0.031216
-Orbits: 1
+Orbits: Mario
 Shape: plane
 Shader: shaders/rosa.frag
 
@@ -48,7 +47,7 @@ Period-Offset: 0.008333
 Tilt: 50
 Rotation-Period: 0.0002777
 Size: 0.052682
-Orbits: 1
+Orbits: Mario
 Texture: images/io_rgb_cyl.png
 Shader: shaders/daisy.frag
 
@@ -63,4 +62,4 @@ Far: 10000
 
 
 [Starbox]
-Texture: starbox-creator/starfield3_4k.png
+Texture: starbox-creator/starfield4_4k.png

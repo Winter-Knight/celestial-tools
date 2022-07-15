@@ -1,0 +1,124 @@
+[Celestial]
+Name: Sun
+Position: 0 0 0
+Size: 100
+Texture: images/solarsystemscope/2k_sun.jpg
+Shader: shaders/sun.frag
+Light: 1 1 1
+
+[Orbital]
+Name: Mercury
+Size: 3.829 # Multiplied by 10
+Distance: 125
+Period: 87.96
+Rotation-Period: 58.64
+Orbits: Sun
+Texture: images/solarsystemscope/2k_mercury.jpg
+Shader: shaders/red_planet.frag
+
+[Orbital]
+Name: Venus
+Size: 4.7495 # Multiplied by 5
+Distance: 150
+Period: 224.7
+Rotation-Period: -243
+Orbits: Sun
+Texture: images/solarsystemscope/2k_venus_surface.jpg
+Shader: shaders/planet.frag
+
+[Orbital]
+Name: Earth
+Size: 5 # Multiplied by 5
+Distance: 175
+Period: 365.25
+Rotation-Period: 10
+Tilt: 23.439
+Orbits: Sun
+Texture: images/solarsystemscope/2k_earth_daymap.jpg
+Shader: shaders/planet.frag
+
+[Orbital]
+Name: Moon
+Size: 2.727 # Multiplied by 10
+Distance: 10
+Period: 27.321
+Rotation-Period: 27.321
+Orbits: Earth
+Texture: images/solarsystemscope/2k_moon.jpg
+Shader: shaders/planet.frag #Celestialbody.frag?
+
+[Orbital]
+Name: Mars
+Size: 5.33 # Multiplied by 10
+Distance: 200
+Period: 687
+Rotation-Period: 1.025
+Orbits: Sun
+Texture: images/nasa/jplcaltech/mar0kuu2.jpg
+Shader: shaders/red_planet.frag
+
+[Orbital]
+Name: Jupiter
+Size: 10.973
+Distance: 225
+Period: 866.518 # Divided by 5
+Rotation-Period: 0.4135
+Orbits: Sun
+Texture: images/solarsystemscope/2k_jupiter.jpg
+Shader: shaders/planet.frag
+
+# Rings for Saturn not yet supported :-(
+[Orbital]
+Name: Saturn
+Size: 9.14
+Distance: 250
+Period: 1075.9 # Divided by 10
+Rotation-Period: 0.4396
+Orbits: Sun
+Texture: images/solarsystemscope/2k_saturn.jpg
+Shader: shaders/planet.frag
+
+[Orbital]
+Name: Uranus
+Size: 8 # Multiplied by 2
+Distance: 275
+Period: 1534.4 # Divided by 20
+Rotation-Period: -0.718
+Orbits: Sun
+Shader: shaders/uranus.frag
+
+[Orbital]
+Name: Neptune
+Size: 7.766 # Multiplied by 2
+Distance: 300
+Period: 2006.5 # Divided by 30
+Rotation-Period: 0.6713
+Orbits: Sun
+Texture: images/solarsystemscope/2k_neptune.jpg
+Shader: shaders/planet.frag
+
+[Orbital]
+Name: Pluto
+Size: 1.868 # Multiplied by 10
+Distance: 350
+Period: 2264 # Divided by 40
+Rotation-Period: -6.387
+Orbits: Sun
+Texture: images/nasa/jplcaltech/plu0rss1.jpg
+Shader: shaders/planet.frag
+
+
+[Camera]
+Position: 0 600 0
+Direction: 0 -1 0
+Up: 0 0 -1
+#Position: 300 0 30
+#Direction: 0 0 -1
+#Up: 0 1 0
+FOV: 60
+Near: 0.1
+Far: 10000
+
+
+[Starbox]
+Texture: starbox-creator/starfield4_4k.png

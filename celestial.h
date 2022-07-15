@@ -12,7 +12,7 @@
 #include "glplane.h"
 #include "lights.h"
 
-#include "../gl-program.h"
+#include "glprogram.h"
 
 enum SphereType {
 	CPUSPHERE,

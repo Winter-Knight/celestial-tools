@@ -3,7 +3,7 @@
 
 #include <string>
 #include <SDL2/SDL_image.h>
-#include "../gl-program.h"
+#include "glprogram.h"
 
 class Texture {
 public:
@@ -15,11 +15,16 @@ public:
 };
 
 
-inline SDL_Surface * LoadImage(const char * filename, unsigned int format = SDL_PIXELFORMAT_RGB24)
+inline SDL_Surface * LoadImage(const char * filename, unsigned int format = SDL_PIXELFORMAT_RGBA32)
 {
 	SDL_Surface * image, * tmpImage;
 
 	tmpImage = IMG_Load(filename);
+
+	if (!tmpImage) {
+		printf("Error: Image not found: %s!\n", filename);
+		return NULL;
+	}
 
 	if (tmpImage->format->format == format)
 		image = tmpImage;

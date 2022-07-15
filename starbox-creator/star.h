@@ -6,7 +6,7 @@
 #include "camera.h"
 #include "sphere.h"
 
-#include "../gl-program.h"
+#include "glprogram.h"
 
 enum StarType {
 	SPHERES,

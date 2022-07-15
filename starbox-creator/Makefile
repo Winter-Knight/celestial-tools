@@ -2,7 +2,7 @@
 
 BIN = starbox-creator
 SOURCE_FILES= main.cpp ../window.cpp ../input.cpp ../sphere.cpp ../camera.cpp ../framebuffer.cpp world.cpp star.cpp optionswindow.cpp texturerect.cpp
-SOURCE_FILES+= pngsaver.cpp imguifilebrowser/ImGuiFileBrowser.cpp
+SOURCE_FILES+= pngsaver.cpp imguifilebrowser/ImGuiFileBrowser.cpp ../resource-handler.cpp ../texture.cpp
 HEADERS = $(shell ls *.h ../*.h imguifilebrowser/*.h)
 
 CXX = g++

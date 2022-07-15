@@ -1,4 +1,5 @@
 #include "texturerect.h"
+#include "resource-handler.h"
 
 void TextureRect::Init(GLuint tb)
 {
@@ -21,7 +22,7 @@ void TextureRect::Init(GLuint tb)
 	textureBuffer = tb;
 	
 	// Program
-	program = new GLProgram("shaders/drawRect.vert", "shaders/drawRect.frag");
+	program = getProgram("shaders/drawRect.vert", "shaders/drawRect.frag");
 	program->Use();
 	program->SetUniformi("texture0", 0);
 }

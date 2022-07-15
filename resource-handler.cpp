@@ -1,0 +1,91 @@
+#include <map>
+#include <sstream>
+
+#include "resource-handler.h"
+
+static std::map<std::string, Texture> textures;
+static std::map<std::string, GLShader *> shaders;
+static std::map<std::string, GLProgram *> programs;
+
+Texture getTexture(const std::string & filename)
+{
+	// Search map for filename
+	auto textureIter = textures.find(filename);
+
+	if (textureIter != textures.end()) {
+		// If found, return Texture
+		return textureIter->second;
+	}
+	else {
+		// else create and initialize and return new texture
+		Texture texture;
+		texture.Init(filename);
+		textures[filename] = texture;
+		return texture;
+	}
+}
+
+GLShader * getShader(const std::string filename, GLenum shaderType)
+{
+	auto shaderIter = shaders.find(filename);
+	
+	if (shaderIter != shaders.end())
+		// If found, return Shader
+		return shaderIter->second;
+	else {
+		// else return Shader
+		GLShader * shader = new GLShader(filename.c_str(), shaderType);
+		shaders[filename] = shader;
+		return shader;
+	}
+}
+
+GLProgram * getProgramInternal(const std::string key)
+{
+	// Search map for filename
+	auto programIter = programs.find(key);
+
+	if (programIter != programs.end())
+		// If found, return Program
+		return programIter->second;
+	else
+		// Program not found. Creation below.
+		return NULL;
+}
+
+GLProgram * getProgram(const char * vertexshader, const char * fragmentshader)
+{
+	std::stringstream key; key << vertexshader << "/" << fragmentshader;
+
+	GLProgram * program = getProgramInternal(key.str());
+	if (!program) {
+		program = new GLProgram(vertexshader, fragmentshader);
+		programs[key.str()] = program;
+	}
+	return program;
+}
+
+GLProgram * getProgram(const char * vertexshader, const char * geometryshader, const char * fragmentshader)
+{
+	std::stringstream key; key << vertexshader << "/" << geometryshader << "/" << fragmentshader;
+
+	GLProgram * program = getProgramInternal(key.str());
+	if (!program) {
+		program = new GLProgram(vertexshader, geometryshader, fragmentshader);
+		programs[key.str()] = program;
+	}
+	return program;
+}
+
+GLProgram * getProgram(const char * vertexshader, const char * tessCShader,
+	const char * tessEShader, const char * fragmentshader)
+{
+	std::stringstream key; key << vertexshader << "/" << tessCShader << "/" << tessEShader << "/" << fragmentshader;
+
+	GLProgram * program = getProgramInternal(key.str());
+	if (!program) {
+		program = new GLProgram(vertexshader, tessCShader, tessEShader, fragmentshader);
+		programs[key.str()] = program;
+	}
+	return program;
+}

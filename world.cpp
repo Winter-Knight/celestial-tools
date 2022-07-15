@@ -9,7 +9,10 @@ void World::Init(const char * systemFile)
 	input->windowWidth = width;
 	input->windowHeight = height;
 
-	camera = getCameraFromFile(systemFile);
+	if (!(camera = getCameraFromFile(systemFile))) {
+		input->quit = 1;
+		return;
+	}
 	camera->CalculateView();
 	camera->aspect = float(width) / float(height);
 	camera->CalculatePerspective();

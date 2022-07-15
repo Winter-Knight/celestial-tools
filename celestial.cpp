@@ -1,8 +1,7 @@
 #include <sstream>
 
 #include "celestial.h"
-
-#include "../gl-debug.h"
+#include "resource-handler.h"
 
 void Orbital::Update(InputHandler * input, long long time)
 {
@@ -14,8 +13,8 @@ void Orbital::Update(InputHandler * input, long long time)
 
 	long long orbitTime, rotationTime;
 	orbitTime = rotationTime = time;
-	while (orbitTime > period)
-		orbitTime -= period;
+
+	orbitTime = orbitTime % period;
 
 	float angle_in_radians = float(orbitTime + period_offset) / period * 2 * glm::pi<float>();
 	float semi_minor_axis = semi_major_axis * sqrt(1 - eccentricity * eccentricity);
@@ -38,8 +37,7 @@ void Orbital::Update(InputHandler * input, long long time)
 
 	
 	if (rotation_period) {
-		while (rotationTime > rotation_period)
-			rotationTime -= rotation_period;
+		rotationTime = rotationTime % rotation_period;
 		rotation = float(rotationTime) / rotation_period * 2 * glm::pi<float>();
 	}
 }
@@ -47,7 +45,7 @@ void Orbital::Update(InputHandler * input, long long time)
 void Celestial::AddTexture(const char * filename)
 {
 	Texture texture;
-	texture.Init(filename);
+	texture = getTexture(filename);
 	textures.push_back(texture);
 }
 
@@ -68,14 +66,14 @@ void Celestial::Draw(Camera * camera)
 
 	program->SetUniform3f("centerPos_worldspace", &pos[0]);
 	program->SetUniformf("size", size);
-	
+
 	std::stringstream ss;
-	
+
 	for (unsigned int i = 0; i < lightArray.lights.size(); i++) {
 		ss.str("");
 		ss << "lights[" << i << "].pos";
 		program->SetUniform4f(ss.str().c_str(), &lightArray.lights[i].pos[0]);
-		
+
 		ss.str("");
 		ss << "lights[" << i << "].color";
 		program->SetUniform4f(ss.str().c_str(), &lightArray.lights[i].color[0]);

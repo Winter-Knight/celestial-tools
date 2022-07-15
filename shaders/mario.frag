@@ -8,7 +8,7 @@ in vec3 uv;
 in vec3 pos_worldspace;
 in vec3 normal_worldspace;
 
-out vec3 fragColor;
+out vec4 fragColor;
 
 struct Light {
 	vec4 pos;
@@ -35,23 +35,21 @@ void main()
 	vec2 frag_uv = vec2(hangle / (2 * PI), (vangle + 0.5 * PI) / PI);
 	
 	float cosTheta;
-	vec3 color = vec3(0.0);
-	vec3 albedo = texture(texture0, frag_uv).rgb;
+	vec4 color = vec4(vec3(0.0), 1.0);
+	vec4 albedo = texture(texture0, frag_uv);
 
 	vec3 lightDir_worldspace = lights[0].pos.xyz - pos_worldspace;
 	cosTheta = dot(normalize(normal_worldspace), normalize(lightDir_worldspace));
 
 	if (cosTheta > 0.25)
-		color = albedo * lights[0].color.rgb;
+		color = albedo * lights[0].color;
 	else if (cosTheta > 0.0)
-		color = albedo * cosTheta * 4.0 * lights[0].color.rgb;
+		color = albedo * cosTheta * 4.0 * lights[0].color;
 	
 	if (cosTheta > 0.25)
-		color += albedo * (1.25 - cosTheta) * lights[1].color.rgb;
+		color += albedo * (1.25 - cosTheta) * lights[1].color;
 	if (cosTheta < 0.25)
-		color += albedo * lights[1].color.rgb;
+		color += albedo * lights[1].color;
 
-	fragColor = color;
-
-	uint64_t t;
+	fragColor = vec4(color.rgb, 1.0);
 }

@@ -14,12 +14,15 @@ void Texture::Init(std::string filename)
 				return InitETC2(filename.c_str());
 		}
 	}
+
+	SDL_Surface * image = LoadImage(filename.c_str());
+	if (!image)
+		return;
 	
 	glGenTextures(1, &textureBuffer);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureBuffer);
-	SDL_Surface * image = LoadImage(filename.c_str());
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->w, image->h, 0, GL_RGB, GL_UNSIGNED_BYTE, image->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->w, image->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	SDL_FreeSurface(image);

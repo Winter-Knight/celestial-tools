@@ -2,7 +2,9 @@
 Name: Sun
 Position: 0 0 0
 Size: 6.960
+Texture: images/solarsystemscope/2k_sun.jpg
 Shader: shaders/sun.frag
+Light: 1 1 1
 
 [Orbital]
 Name: Earth
@@ -11,10 +13,10 @@ Size: 2
 Period: 0008333
 #Period-Offset: 0004167
 Tilt: 24
-Rotation-Period: 0.002777
-Orbits: 0
-Texture: images/earth.jpg
-Shader: shaders/earth.frag
+Rotation-Period: 1
+Orbits: Sun
+Texture: images/solarsystemscope/2k_earth_daymap.jpg
+Shader: shaders/planet.frag
 
 [Camera]
 Position: 50 0 15
@@ -23,3 +25,6 @@ Up: 0 1 0
 FOV: 60
 Near: 0.01
 Far: 1000
+
+[Starbox]
+Texture: starbox-creator/starfield4_4k.png

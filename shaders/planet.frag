@@ -1,6 +1,7 @@
 #version 330 core
 
-const int numLights = 2;
+const int numLights = 1;
+const float PI = 3.141592653589793;
 
 in vec3 uv;
 in vec3 pos_worldspace;
@@ -35,7 +36,23 @@ vec4 lighting(vec4 albedo)
 
 void main()
 {
-	vec4 color = texture(texture0, uv.ts);
-	color = vec4(pow(color.rgb, vec3(3)) * 2.0, 1.0);
-	fragColor = lighting(color);
+	vec3 n = normalize(uv);
+	
+	float vangle = asin(n.y);
+	float th = cos(vangle);
+	
+	if (th == 0)
+		th = 0.00001;
+	
+	float hangle = acos(clamp(n.x / th, -1, 1));
+	
+	if (n.z >= 0.0)
+		hangle = 2 * PI - hangle;
+
+	vec2 frag_uv = vec2(hangle / (2 * PI), (vangle + 0.5 * PI) / PI);
+	
+	vec4 albedo = texture(texture0, frag_uv);
+
+	fragColor = lighting(albedo);
+//	fragColor = albedo;
 }

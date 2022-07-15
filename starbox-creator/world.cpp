@@ -2,12 +2,13 @@
 #include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "world.h"
+#include "resource-handler.h"
 #include "pngsaver.h"
 #include "imguifilebrowser/ImGuiFileBrowser.h"
 
 void World::Init()
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 	// Setup camera
 	int width, height;
@@ -37,15 +38,15 @@ void World::Init()
 	
 	// Init StarArray Drawers
 	starArrayDrawerBillboards.drawProgramPerspective =
-		new GLProgram("shaders/starBillboards.vert", "shaders/starBillboardsPerspective.geom", "shaders/circle.frag", true);
+		getProgram("shaders/starBillboards.vert", "shaders/starBillboardsPerspective.geom", "shaders/circle.frag");
 	starArrayDrawerBillboards.drawProgramWrap =
-		new GLProgram("shaders/starBillboards.vert", "shaders/starBillboardsWrap.geom", "shaders/circle.frag", true);
+		getProgram("shaders/starBillboards.vert", "shaders/starBillboardsWrap.geom", "shaders/circle.frag");
 	starArrayDrawerBillboards.Init(&starArray);
 
 	starArrayDrawerSpheres.drawProgramPerspective =
-		new GLProgram("shaders/starSpheresPerspective.vert", "shaders/flat.frag");
+		getProgram("shaders/starSpheresPerspective.vert", "shaders/flat.frag");
 	starArrayDrawerSpheres.drawProgramWrap =
-		new GLProgram("shaders/starSpheresWrap.vert", "shaders/starSpheresWrap.geom", "shaders/flat.frag", true);
+		getProgram("shaders/starSpheresWrap.vert", "shaders/starSpheresWrap.geom", "shaders/flat.frag");
 
 	starArrayDrawerSpheres.Init(&starArray);
 
@@ -55,7 +56,7 @@ void World::Init()
 	UpdateStars();
 
 /*	// Set up debugging:
-	debugProgram = new GLProgram("shaders/billboards-wrap.vert", "shaders/billboards-debug.frag");
+	debugProgram = getProgram("shaders/billboards-wrap.vert", "shaders/billboards-debug.frag");
 	debugFramebuffer = new Framebuffer();
 	debugFramebuffer->Init(3, 3, GL_FLOAT, 2048, 2048);
 */
