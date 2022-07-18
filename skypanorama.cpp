@@ -4,6 +4,8 @@
 #include "skypanorama.h"
 #include "resource-handler.h"
 
+using namespace celestial;
+
 void SkyPanorama::Init(const char * filename)
 {
 	// Vertex Array

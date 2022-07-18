@@ -1,5 +1,7 @@
 #include "input.h"
 
+using namespace celestial;
+
 void InputHandler::Reset()
 {
 	lastKey = xrel = yrel = buttonMask = windowEvent = 0;
@@ -76,5 +78,76 @@ void InputHandler::WindowEvent(SDL_Event * event, Window * window)
 		windowWidth = event->window.data1;
 		windowHeight = event->window.data2;
 		glViewport(0, 0, windowWidth, windowHeight);
+	}
+}
+
+static const float speed = 0.0010f; // 1 units / second
+static const float mouseSpeed = 0.005f;
+
+void InputHandler::UpdateCamera(Camera * camera)
+{
+	glm::vec3 dir = glm::normalize(camera->dir);
+	glm::vec3 up = glm::normalize(camera->up);
+	glm::vec3 right = glm::cross(dir, camera->up);
+	glm::vec3 pos = camera->pos;
+
+	// Mouse
+
+	int axrel = abs(xrel);
+	int ayrel = abs(yrel);
+
+	if (!buttonMask) {
+	// Yaw (left and right)
+		dir = glm::normalize((dir * float(100 - axrel)) + (right * float(xrel)));
+	}
+	else if (buttonMask == SDL_BUTTON_RMASK) {
+	// Roll (like rolling your head)
+		up = glm::normalize((up * float(100 - axrel)) + (right * float(xrel)));
+	}
+	right = glm::cross(dir, up);
+
+	// Pitch (up and down)
+	dir = glm::normalize((dir * float(100 - ayrel)) + (up * float(yrel)));
+	up = glm::cross(right, dir);
+
+
+	// Keyboard
+	
+	const unsigned char * state = SDL_GetKeyboardState(NULL);
+
+	float deltaTime = 16.0f;
+	if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
+		deltaTime *= 60;
+	if (state[SDL_SCANCODE_LALT] || state[SDL_SCANCODE_RALT])
+		deltaTime /= 60;
+
+	if (state[SDL_SCANCODE_W]) {
+			pos += dir * (deltaTime * speed);
+	}
+	if (state[SDL_SCANCODE_D]) {
+			pos += right * (deltaTime * speed);
+	}
+	if (state[SDL_SCANCODE_S]) {
+			pos -= dir * (deltaTime * speed);
+	}
+	if (state[SDL_SCANCODE_A]) {
+			pos -= right * (deltaTime * speed);
+	}
+	if (state[SDL_SCANCODE_E]) {
+			pos += up * (deltaTime * speed);
+	}
+	if (state[SDL_SCANCODE_Q]) {
+			pos -= up * (deltaTime * speed);
+	}
+
+	camera->pos = pos;
+	camera->dir = dir;
+	camera->up = up;
+	
+	camera->CalculateView();
+	
+	if (windowEvent) {
+		camera->aspect = float(windowWidth) / float(windowHeight);
+		camera->CalculatePerspective();
 	}
 }

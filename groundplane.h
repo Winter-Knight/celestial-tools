@@ -8,14 +8,14 @@
 class GroundPlane {
 public:
 	void Init();
-	void Draw(Camera * mainCamera);
+	void Draw(celestial::Camera * mainCamera);
 
 private:
 	GLuint vertexArray;
 	GLuint vertexBuffer;
 	
 	GLProgram * program;
-	Camera camera;
+	celestial::Camera camera;
 };
 
 #endif // GROUNDPLANE_H

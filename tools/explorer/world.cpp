@@ -17,12 +17,6 @@ void World::Init(const char * systemFile)
 	camera->aspect = float(width) / float(height);
 	camera->CalculatePerspective();
 
-	// Setup skybox
-	skybox = new Skybox();
-	skybox->dirName = "images/starry-sky";
-	skybox->Init();
-	skybox->program = new GLProgram("shaders/skybox.vert", "shaders/skybox.frag");
-	
 	// Setup skypanorama
 	skypanorama = new SkyPanorama();
 	skypanorama->Init(getStarboxFromFile(systemFile).c_str());
@@ -33,7 +27,6 @@ void World::Init(const char * systemFile)
 	Celestial::plane.Init();
 
 	// Load celestial objects
-//	parseSystemFile(celestials, systemFile, "shaders/celestial.vert", "shaders/celestial.tes");
 	parseSystemFile(celestials, systemFile);
 	
 	// Init light array (array of celestial bodies that emit light)
@@ -54,22 +47,9 @@ void World::Init(const char * systemFile)
 void World::Update(long long time)
 {
 	for (unsigned int i = 0; i < celestials.size(); i++)
-		celestials[i]->Update(input, time);
+		celestials[i]->Update(time);
 
-	camera->Update(input);
-
-	if (input->lastKey == SDLK_g) {
-		if (SDL_GetRelativeMouseMode())
-			SDL_SetRelativeMouseMode(SDL_FALSE);
-		else
-			SDL_SetRelativeMouseMode(SDL_TRUE);
-	}
-	
-	static GLenum wireframe = GL_FILL;
-	if (input->lastKey == SDLK_z) {
-		wireframe = (wireframe == GL_FILL) ? GL_LINE : GL_FILL;
-		glPolygonMode(GL_FRONT_AND_BACK, wireframe);
-	}
+	input->UpdateCamera(camera);
 
 	// Update light array (array of celestial bodies that emit light)
 	Celestial::lightArray.ClearLights();
@@ -83,21 +63,6 @@ void World::Update(long long time)
 
 void World::DrawPerspective(int celestialID)
 {
-	static GLProgram marioCPUSphereProgram = *celestials[1]->program;
-	static GLProgram marioTessSphereProgram("shaders/celestial.vert", NULL, "shaders/celestial.tes", "shaders/mario.frag");
-	static SphereType sphereType = CPUSPHERE;
-
-	if (input->lastKey == SDLK_o) {
-		if (sphereType == TESSSPHERE) {
-			sphereType = CPUSPHERE;
-			celestials[1]->program = &marioCPUSphereProgram;
-		}
-		else if (sphereType == CPUSPHERE) {
-			sphereType = TESSSPHERE;
-			celestials[1]->program = &marioTessSphereProgram;
-		}
-	}
-	
 	// Increase or decrease the tilt of Rosa for debugging
 	if (SDL_GetKeyboardState(NULL)[SDL_SCANCODE_UP])
 		celestials[3]->tilt += 0.1f;
@@ -128,5 +93,5 @@ void World::DrawPerspective(int celestialID)
 	skypanorama->Draw(&drawCam);
 	for (unsigned int i = 0; i < celestials.size(); i++)
 		if ((int) i != celestialID)
-			celestials[i]->Draw(&drawCam, sphereType);
+			celestials[i]->Draw(&drawCam);
 }

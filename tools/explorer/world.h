@@ -3,11 +3,12 @@
 
 #include "window.h"
 #include "camera.h"
-#include "skybox.h"
 #include "skypanorama.h"
 #include "input.h"
 #include "celestial.h"
 #include "framebuffer.h"
+
+using namespace celestial;
 
 class World {
 public:
@@ -22,7 +23,6 @@ private:
 	InputHandler * input;
 
 	Camera * camera;
-	Skybox * skybox;
 	SkyPanorama * skypanorama;
 
 	std::vector<Celestial *> celestials;

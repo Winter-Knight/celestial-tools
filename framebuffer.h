@@ -4,8 +4,6 @@
 #define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
-#include "input.h"
-
 #define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
 
@@ -14,7 +12,7 @@ public:
 	void Init(int numAttachments, int numChannels, GLenum channelType, int width, int height);
 	void Use();
 	void Stop();
-	void CheckForClicks(InputHandler * input);
+//	void CheckForClicks(InputHandler * input);
 	GLenum GetReadPixelFormat();
 	void * GetData(int attachment);
 	

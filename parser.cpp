@@ -1,10 +1,13 @@
 #include <fstream>
 #include <sstream>
-#include <map>
 
 #include "parser.h"
 
-void parseSystemFile(std::vector<Celestial *> & celestials, const char * filename, const char * vertexshaderfile, const char * tessEshaderfile)
+std::map<std::string, int> celestialIDMap;
+
+using namespace celestial;
+
+void parseSystemFile(std::vector<Celestial *> & celestials, const char * filename, const char * vertexshaderfile)
 {
 	std::string line, fieldName;
 	std::stringstream ss;
@@ -15,8 +18,6 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 	glm::vec3 floats;
 	int iValue;
 	
-	std::map<std::string, int> celestialIDMap;
-
 	// Open file
 	std::ifstream file(filename);
 	if (!file.is_open()) {
@@ -69,7 +70,7 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		}
 		else if (fieldName == "Shader:") {
 			ss >> strValue;
-			celestial->program = new GLProgram(vertexshaderfile, NULL, tessEshaderfile, strValue.c_str());
+			celestial->program = new GLProgram(vertexshaderfile, strValue.c_str());
 		}
 		else if (fieldName == "Distance:") {
 			ss >> fValue;
@@ -199,7 +200,7 @@ std::string getStarboxFromFile(const char * filename)
 	std::ifstream file(filename);
 	if (!file.is_open()) {
 		printf("File %s failed to open. Exiting parse function.\n", filename);
-		return NULL;
+		return "";
 	}
 
 	while (!file.eof()) {

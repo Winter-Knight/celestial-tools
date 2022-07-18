@@ -27,4 +27,4 @@ Near: 0.01
 Far: 1000
 
 [Starbox]
-Texture: starbox-creator/starfield4_4k.png
+Texture: images/starbox1_4k.png

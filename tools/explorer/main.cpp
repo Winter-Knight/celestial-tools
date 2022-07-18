@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <chrono>
 #include "world.h"
 #include "window.h"
 #include "groundplane.h"
@@ -11,9 +12,29 @@ GroundPlane groundplane;
 
 const char * systemFile;
 
+namespace stdtime = std::chrono;
+
+long long nowMicro()
+{
+	stdtime::system_clock::time_point tp = stdtime::system_clock::now();
+	stdtime::system_clock::duration   d  = tp.time_since_epoch();
+	stdtime::microseconds             us = stdtime::duration_cast<stdtime::microseconds> (d);
+	return us.count();
+}
+
+stdtime::duration<float> getDelta()
+{
+	static stdtime::steady_clock::time_point lastTime = stdtime::steady_clock::now();
+	stdtime::steady_clock::time_point now = stdtime::steady_clock::now();
+	stdtime::duration<float> d = now - lastTime;
+	lastTime = now;
+	return d;
+}
+
 void play()
 {
-	long long time = 31557600000000; // one year after epoch
+//	long long time = 31557600000000; // one year after epoch
+	long long time = 0;
 	Camera * camera = world->GetCamera();
 	glm::mat4 rotationMatrix;
 	int celestialID = -1;
@@ -22,7 +43,7 @@ void play()
 	const unsigned char * keyboardState = SDL_GetKeyboardState(NULL);
 	while (!input->HandleEvents(window)) {
 		if (!input->paused)
-			time += 16000 * timeSpeed;
+			time += getDelta().count() * 1000000.0f * timeSpeed;
 		world->Update(time);
 
 		if (input->lastKey == SDLK_F6)
@@ -43,8 +64,17 @@ void play()
 			camera->aspect = float(input->windowWidth) / float(input->windowHeight);
 			camera->CalculatePerspective();
 		}
-			
-
+		if (input->lastKey == SDLK_g) {
+			if (SDL_GetRelativeMouseMode())
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+			else
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+		}
+		static GLenum wireframe = GL_FILL;
+		if (input->lastKey == SDLK_z) {
+			wireframe = (wireframe == GL_FILL) ? GL_LINE : GL_FILL;
+			glPolygonMode(GL_FRONT_AND_BACK, wireframe);
+		}
 
 		window->Clear();
 		world->DrawPerspective(celestialID);

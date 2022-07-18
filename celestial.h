@@ -6,9 +6,7 @@
 
 #include "camera.h"
 #include "texture.h"
-#include "input.h"
 #include "glsphere.h"
-#include "gltesssphere.h"
 #include "glplane.h"
 #include "lights.h"
 
@@ -26,9 +24,9 @@ enum Shape {
 
 class Celestial {
 public:
-	virtual void Update(InputHandler * input, long long time) {}
-	virtual void Draw(Camera * camera);
-	virtual void Draw(Camera * camera, SphereType sphereType);
+	virtual void Update(long long time) {}
+	virtual void Draw(celestial::Camera * camera);
+	virtual void Draw(celestial::Camera * camera, SphereType sphereType);
 	virtual void AddTexture(const char * filename);
 
 // protected:
@@ -44,7 +42,6 @@ public:
 	GLProgram * program;
 
 	static GLSphere sphere;
-	GLTessSphere tessSphere;
 	static GLPlane plane;
 	static LightArray lightArray;
 };
@@ -52,7 +49,7 @@ public:
 
 class Orbital : public Celestial {
 public:
-	virtual void Update(InputHandler * input, long long time);
+	virtual void Update(long long time);
 
 // protected:
 	Celestial * orbitObject;

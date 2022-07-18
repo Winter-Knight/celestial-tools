@@ -121,4 +121,4 @@ Far: 10000
 
 
 [Starbox]
-Texture: starbox-creator/starfield4_4k.png
+Texture: images/starbox1_4k.png

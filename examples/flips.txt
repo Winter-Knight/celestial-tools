@@ -2,6 +2,7 @@
 Name: Sun
 Position: 0 0 0
 Size: 6.960
+Texture: images/solarsystemscope/2k_sun.jpg
 Shader: shaders/sun.frag
 Light: 1 1 1
 
@@ -12,7 +13,7 @@ Period: 8760
 Tilt: 45
 Size: 0.069911
 Orbits: Sun
-Texture: starbox-creator/starfield4_4k.png
+Texture: images/starbox1_4k.png
 Shader: shaders/mario.frag
 Light: 0.3 0.05 0.05
 
@@ -62,4 +63,5 @@ Far: 10000
 
 
 [Starbox]
-Texture: starbox-creator/starfield4_4k.png
+#Texture: images/starbox1_4k.png
+Texture: images/tmp2.png

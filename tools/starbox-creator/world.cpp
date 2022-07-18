@@ -170,7 +170,7 @@ void World::Play()
 		}
 		
 		if (SDL_GetRelativeMouseMode())
-			camera->Update(input);
+			input->UpdateCamera(camera);
 
 		if (optionsWindow->GetActions()->updateStars || input->lastKey == SDLK_F5) {
 			UpdateStars();

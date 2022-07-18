@@ -3,12 +3,13 @@
 
 #include "texture.h"
 #include "glprogram.h"
+#include "camera.h"
 
 class SkyPanorama {
 public:
 
 	void Init(const char * filename);
-	void Draw(Camera * camera);
+	void Draw(celestial::Camera * camera);
 
 	GLuint vertexArray;
 	GLuint vertexBuffer;

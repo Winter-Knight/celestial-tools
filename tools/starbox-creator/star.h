@@ -8,6 +8,8 @@
 
 #include "glprogram.h"
 
+using namespace celestial;
+
 enum StarType {
 	SPHERES,
 	BILLBOARDS,

@@ -3,11 +3,10 @@
 #include "celestial.h"
 #include "resource-handler.h"
 
-void Orbital::Update(InputHandler * input, long long time)
-{
-	if (input->paused)
-		return;
+using namespace celestial;
 
+void Orbital::Update(long long time)
+{
 	if (!semi_major_axis)
 		semi_major_axis = distance;
 
@@ -97,24 +96,7 @@ void Celestial::Draw(Camera * camera, SphereType sphereType)
 	if (sphereType == CPUSPHERE)
 		Draw(camera);
 	else if (sphereType == TESSSPHERE) {
-		
-		program->Use();
-		glm::mat4 R1 = glm::rotate(glm::mat4(1.0f), glm::radians(tilt), glm::vec3(0.0f, 0.0f, -1.0f));
-		glm::mat4 R2 = glm::rotate(glm::mat4(1.0f), rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-		glm::mat4 Rotations = R1 * R2;
-		glm::mat4 T = glm::translate(glm::mat4(1.0f), pos);
-		glm::mat4 VP = camera->perspective * camera->view;
-	
-		program->SetUniformMatrix4f("VP", &VP[0][0]);
-		program->SetUniformMatrix4f("Rotations", &Rotations[0][0]);
-		program->SetUniformMatrix4f("Translation", &T[0][0]);
-		
-		tessSphere.Bind(pos, size, tilt);
-		
-		for (unsigned int i = 0; i < textures.size(); i++)
-			textures[i].Bind(program, i);
-		
-		glDrawArrays(GL_PATCHES, 0, 1);
+		printf("Tess Spheres no longer supported. CPU spheres are mature.\n");
 	}
 }
 

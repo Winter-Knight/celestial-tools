@@ -1,3 +1,5 @@
+#include <cstdio>
+
 #include "framebuffer.h"
 
 void Framebuffer::Init(int numA, int numC, GLenum channelT, int w, int h)
@@ -112,7 +114,7 @@ GLenum Framebuffer::GetReadPixelFormat()
 	return GL_NONE;
 }
 
-void Framebuffer::CheckForClicks(InputHandler * input)
+/*void Framebuffer::CheckForClicks(InputHandler * input)
 {
 	GLenum format = GetReadPixelFormat();
 
@@ -144,7 +146,7 @@ void Framebuffer::CheckForClicks(InputHandler * input)
 
 		Stop();
 	}
-}
+} */
 
 void * Framebuffer::GetData(int attachment)
 {

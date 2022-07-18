@@ -24,7 +24,7 @@ void main()
 	gl_Position = VP * Translation * rotated_pos;
 //	gl_Position = VP * Translation * vec4(pos, 1.0);
 
-	uv = vec3(pos_modelspace.x, -pos_modelspace.y, pos_modelspace.z);
-//	uv = pos_modelspace;
+//	uv = vec3(pos_modelspace.x, -pos_modelspace.y, pos_modelspace.z);
+	uv = pos_modelspace;
 	pos_worldspace = vec4(Translation * rotated_pos).xyz;
 }

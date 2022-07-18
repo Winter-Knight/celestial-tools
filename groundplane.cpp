@@ -1,5 +1,7 @@
 #include "groundplane.h"
 
+using namespace celestial;
+
 void GroundPlane::Init()
 {
 	glGenVertexArrays(1, &vertexArray);

@@ -1,5 +1,6 @@
 *.o
 *.png
 *.pkm
+*.0
 imgui.ini
 images

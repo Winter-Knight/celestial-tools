@@ -2,7 +2,7 @@
 #define TEXTURE_H
 
 #include <string>
-#include <SDL2/SDL_image.h>
+#include <FreeImage.h>
 #include "glprogram.h"
 
 class Texture {
@@ -14,26 +14,31 @@ public:
 	GLuint textureBuffer;
 };
 
-
-inline SDL_Surface * LoadImage(const char * filename, unsigned int format = SDL_PIXELFORMAT_RGBA32)
+inline FIBITMAP * LoadImage(const char * filename)
 {
-	SDL_Surface * image, * tmpImage;
+	FIBITMAP * tmpImage, * image;
 
-	tmpImage = IMG_Load(filename);
-
+	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(filename);
+	tmpImage = FreeImage_Load(fif, filename, 0);
+	
 	if (!tmpImage) {
 		printf("Error: Image not found: %s!\n", filename);
 		return NULL;
 	}
+	
+	FREE_IMAGE_TYPE imageType = FreeImage_GetImageType(tmpImage);
+	printf("image filename: %s     fif: %d     format: %d\n", filename, fif, imageType);
+	if (imageType != FIT_BITMAP)
+		printf("WARNING: Image type for %s may not be supported. Image type: %d\n", filename, imageType);
 
-	if (tmpImage->format->format == format)
+	if (FreeImage_GetBPP(tmpImage) == 32)
 		image = tmpImage;
 	else {
-		image = SDL_ConvertSurfaceFormat(tmpImage, format, 0);
-		SDL_FreeSurface(tmpImage);
+		image = FreeImage_ConvertTo32Bits(tmpImage);
+		FreeImage_Unload(tmpImage);
 	}
-
+	
 	return image;
 }
-
+	
 #endif // TEXTURE_H

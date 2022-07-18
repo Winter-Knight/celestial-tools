@@ -1,8 +1,9 @@
-#include "window.h"
-#include "texture.h"
-
+#include <string>
+#include <cstring>
 #include <sstream>
 #include <netinet/in.h>
+
+#include "texture.h"
 
 void Texture::Init(std::string filename)
 {
@@ -15,17 +16,18 @@ void Texture::Init(std::string filename)
 		}
 	}
 
-	SDL_Surface * image = LoadImage(filename.c_str());
+	FIBITMAP * image = LoadImage(filename.c_str());
 	if (!image)
 		return;
 	
 	glGenTextures(1, &textureBuffer);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->w, image->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image->pixels);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FreeImage_GetWidth(image), FreeImage_GetHeight(image),
+		0, GL_BGRA, GL_UNSIGNED_BYTE, FreeImage_GetBits(image));
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 //	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	SDL_FreeSurface(image);
+	FreeImage_Unload(image);
 //	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }

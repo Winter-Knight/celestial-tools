@@ -9,6 +9,8 @@
 #include "texturerect.h"
 #include "../twister-std.h"
 
+using namespace celestial;
+
 class World {
 public:
 	World(Window * w, InputHandler * i) { window = w; input = i; }
