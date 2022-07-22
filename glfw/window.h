@@ -4,7 +4,7 @@
 // Debian ImGui needs glew
 #include <GL/glew.h>
 
-#include <SDL2/SDL.h>
+#include <GLFW/glfw3.h>
 
 const unsigned int INITIAL_WINDOW_WIDTH = 1200;
 const unsigned int INITIAL_WINDOW_HEIGHT = 900;
@@ -15,20 +15,17 @@ class Window
 public:
 	Window();
 	~Window();
-	static int CheckSDLError(const char * str = "");
 	static int CheckGLError(const char * str = "");
 	void Clear();
 	void Swap();
 
-	SDL_Window * GetWindow() { return window; }
-	SDL_GLContext * GetContext() { return &context; }
-	unsigned int GetWindowHeight() { SDL_GetWindowSize(window, &width, &height); return height; }
+	GLFWwindow * GetWindow() { return window; }
+	unsigned int GetWindowHeight() { glfwGetWindowSize(window, &width, &height); return height; }
 
 private:
 	void InitOpenGL();
 
-	SDL_Window * window;
-	SDL_GLContext context;
+	GLFWwindow * window;
 
 	int width;
 	int height;

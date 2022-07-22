@@ -1,34 +1,34 @@
-BIN = explorer
+BIN = terrainjumper-glfw
 ROOT_DIR= ../..
-SOURCE_FILES= main.cpp world.cpp groundplane.cpp
-SOURCE_FILES+= $(ROOT_DIR)/sdl/window.cpp $(ROOT_DIR)/sdl/input.cpp
-HEADERS = $(shell ls $(ROOT_DIR)/*.h $(ROOT_DIR)/*.hpp $(ROOT_DIR)/sdl/*.h)
+SOURCE_FILES= terrainjumper.cpp terrain.cpp player.cpp
+SOURCE_FILES+= $(ROOT_DIR)/glfw/window.cpp $(ROOT_DIR)/glfw/input.cpp
+HEADERS = $(shell ls $(ROOT_DIR)/*.h $(ROOT_DIR)/*.hpp $(ROOT_DIR)/glfw/*.h)
 LIBNAME = CelestialWorlds
 LIB = libCelestialWorlds.so
 DLL = $(LIBNAME).dll
 
 CXX = g++
 OPT = -O0 -g
-CXXFLAGS = -Wall -Wno-unused-variable $(OPT) -I$(ROOT_DIR) -I$(ROOT_DIR)/sdl -I.
+CXXFLAGS = -DUSE_GLFW -Wall -Wno-unused-variable $(OPT) -I$(ROOT_DIR) -I$(ROOT_DIR)/glfw -I.
 OBJECTS = $(patsubst %.cpp,%.o,$(SOURCE_FILES))
-LIBS = -lGL -lGLEW -lSDL2 -lfreeimage -L$(ROOT_DIR) -l$(LIBNAME)
+LIBS = -lGL -lGLEW -lglfw -lfreeimage -L$(ROOT_DIR) -l$(LIBNAME)
 MAKE = make
 
 WIN_CXX = i686-w64-mingw32-g++
-WIN_CXXFLAGS = -Wall -Wno-unused-variable -Wno-comment $(OPT) -DSDL_MAIN_HANDLED -I$(HOME)/win32-depends/include/ -I$(ROOT_DIR) -I$(ROOT_DIR)/sdl -I.
+WIN_CXXFLAGS = -DUSE_GLFW -Wall -Wno-unused-variable -Wno-comment $(OPT) -I$(HOME)/win32-depends/include/ -I$(ROOT_DIR) -I$(ROOT_DIR)/glfw -I.
 WIN_OBJECTS = $(patsubst %.cpp,%.obj,$(SOURCE_FILES))
-WIN_LIBS = -static-libstdc++ -static-libgcc -L$(HOME)/win32-depends/lib/ -lglew32 -lopengl32 -lSDL2 -lFreeImage -L $(ROOT_DIR) -lCelestialWorlds
+WIN_LIBS = -static-libstdc++ -static-libgcc -L$(HOME)/win32-depends/lib/ -lglew32 -lopengl32 -lglfw3 -lFreeImage -L $(ROOT_DIR) -lCelestialWorlds
 
 $(BIN): $(OBJECTS) $(ROOT_DIR)/$(LIB)
 	$(CXX) -o $(BIN) $(OBJECTS) $(LIBS)
 
-main.o: main.cpp $(HEADERS) $(shell ls *.h)
+terrainjumper.o: terrainjumper.cpp $(HEADERS) $(shell ls *.h)
 	$(CXX) -c -o $@ $(CXXFLAGS) $<
 
-world.o: world.cpp $(HEADERS) $(shell ls *.h)
+terrain.o: terrain.cpp $(HEADERS) $(shell ls *.h)
 	$(CXX) -c -o $@ $(CXXFLAGS) $<
 
-groundplane.o: groundplane.cpp $(HEADERS) $(shell ls *.h)
+player.o: player.cpp $(HEADERS) $(shell ls *.h)
 	$(CXX) -c -o $@ $(CXXFLAGS) $<
 
 %.o: %.cpp $(HEADERS)
@@ -57,4 +57,5 @@ win-clean:
 	-rm $(BIN).exe
 	-rm $(WIN_OBJECTS)
 
-clean-all: clean win-clean
+wine-copy: $(BIN).exe $(ROOT_DIR)/$(DLL) $(ROOT_DIR)/tools/explorer/explorer.exe
+	cp $^ /mnt/wine/home/wk/celestial/

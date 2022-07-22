@@ -5,9 +5,10 @@
 		- Another moon with tiny moons of its own
 		- A planet with a close orbit that can only be seen for a brief period per year
 	- I want the sun to look like moving molten lava
-* Make as easy to use library
+
 * Build and test on Windows
 * Test with AMD and Intel video cards
+* make relative paths a little friendlier
 * publish library to github
 * Documentation
 	- Compiling (SKIP THIS TUTORIAL: Download binaries here)

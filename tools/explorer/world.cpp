@@ -20,7 +20,6 @@ void World::Init(const char * systemFile)
 	// Setup skypanorama
 	skypanorama = new SkyPanorama();
 	skypanorama->Init(getStarboxFromFile(systemFile).c_str());
-	skypanorama->program = new GLProgram("shaders/skypanorama.vert", "shaders/skypanorama.frag");
 	
 	// OpenGL Shapes
 	Celestial::sphere.Init(4);
@@ -90,7 +89,7 @@ void World::DrawPerspective(int celestialID)
 		drawCam = *camera;
 
 	// Draw all objects
-	skypanorama->Draw(&drawCam);
+	skypanorama->Draw(&drawCam, 1.0f);
 	for (unsigned int i = 0; i < celestials.size(); i++)
 		if ((int) i != celestialID)
 			celestials[i]->Draw(&drawCam);

@@ -63,5 +63,4 @@ Far: 10000
 
 
 [Starbox]
-#Texture: images/starbox1_4k.png
-Texture: images/tmp2.png
+Texture: images/starbox1_4k.png

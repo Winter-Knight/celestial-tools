@@ -11,6 +11,7 @@ uniform highp mat4 pano_transform;
 uniform vec4 asym_proj;
 
 uniform sampler2D texture0; //texunit:0
+uniform float alpha;
 
 vec4 texturePanorama(vec3 normal, sampler2D pano) {
 
@@ -43,5 +44,5 @@ void main() {
 	cube_normal = mat3(pano_transform) * cube_normal;
 	cube_normal.z = -cube_normal.z;
 
-	frag_color = texturePanorama(normalize(cube_normal.xyz), texture0);
+	frag_color = vec4(texturePanorama(normalize(cube_normal.xyz), texture0).rgb, alpha);
 }

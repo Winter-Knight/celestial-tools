@@ -8,14 +8,14 @@
 #include "camera.h"
 
 class Celestial;
-class SkyPanorama;
+class SkyArray;
 
 namespace celestial {
 
 class World {
 public:
 	void Init();
-	void loadSystemFile(const char * systemFile);
+	bool loadSystemFile(const char * systemFile);
 	Camera & getCamera() { return camera; }
 	void putCameraOnBody(const char * body);
 	void setTime(long long time);
@@ -25,13 +25,15 @@ public:
 	Celestial * getCelestial(const char * celestialName);
 	int getNumLights();
 	glm::vec4 getLightPos(int index);
+	glm::vec4 getLightDir(int index);
 	glm::vec4 getLightColor(int index);
 
 private:
 	Camera camera;
-	SkyPanorama * skypanorama;
+	SkyArray * skyArray;
 	std::vector<Celestial *> celestials;
 	int currentBody = -1;
+	glm::mat4 Rotations;
 };
 
 }

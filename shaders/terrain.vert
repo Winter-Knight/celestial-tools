@@ -3,6 +3,7 @@
 layout(location = 0) in vec3 p;
 
 out vec3 uv;
+out vec3 pos_worldspace;
 
 uniform mat4 VP;
 
@@ -34,4 +35,5 @@ void main()
 
 	gl_Position = VP * vec4(pos, 1.0);
 	uv = pos / vec3(32.0);
+	pos_worldspace = pos;
 }

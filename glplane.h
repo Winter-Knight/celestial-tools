@@ -1,8 +1,12 @@
 #ifndef GLPLANE_H
 #define GLPLANE_H
 
-#define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#ifndef _WIN32
+	#define GL_GLEXT_PROTOTYPES
+	#include <GL/gl.h>
+#else
+	#include <GL/glew.h>
+#endif // _WIN32
 
 class GLPlane {
 public:

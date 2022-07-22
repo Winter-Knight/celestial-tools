@@ -1,3 +1,5 @@
+#include <cstdio>
+
 #include "glsphere.h"
 
 void GLSphere::Init(int level)
@@ -22,6 +24,7 @@ void GLSphere::Init(int level)
 	numVertices = sphere1.vertices.size();
 	numIndices = sphere1.faces.size() * 3;
 	
+	fprintf(stderr, "glGenVertexArrays: %p\n", glGenVertexArrays);
 	glGenVertexArrays(1, &vertexArray);
 	glBindVertexArray(vertexArray);
 	

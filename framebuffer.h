@@ -1,11 +1,14 @@
 #ifndef FRAMEBUFFER_H
 #define FRAMEBUFFER_H
 
-#define GLM_FORCE_RADIANS
 #include <glm/glm.hpp>
 
-#define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#ifndef _WIN32
+	#define GL_GLEXT_PROTOTYPES
+	#include <GL/gl.h>
+#else
+	#include <GL/glew.h>
+#endif // _WIN32
 
 class Framebuffer {
 public:

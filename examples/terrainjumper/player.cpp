@@ -1,6 +1,5 @@
 #include "player.h"
-
-#include "window.h"
+#include "compat.h"
 
 void Player::Init(Terrain * t, InputHandler * i)
 {
@@ -30,7 +29,7 @@ void Player::handleJumps(std::chrono::duration<float> deltaTime)
 	if (inAir)
 		speed += gravity * deltaTime.count();
 
-	if (input->lastKey == SDLK_SPACE && !inAir) {
+	if (input->lastKey == KEY_SPACE && !inAir) {
 		speed = glm::max(speed, 0.0f);
 		speed += jumpStrength;
 	}
@@ -69,25 +68,21 @@ void Player::updateCamera(std::chrono::duration<float> dt) // time in seconds
 
 	// Keyboard
 	
-	const unsigned char * state = SDL_GetKeyboardState(NULL);
+	const unsigned char * state = GetKeyboardState(NULL);
 
-	if (state[SDL_SCANCODE_LSHIFT] || state[SDL_SCANCODE_RSHIFT])
+	if (state[LSHIFT] || state[RSHIFT])
 		deltaTime *= 5;
-	if (state[SDL_SCANCODE_LALT] || state[SDL_SCANCODE_RALT])
+	if (state[LALT] || state[RALT])
 		deltaTime /= 10;
 
-	if (state[SDL_SCANCODE_W])
+	if (state[KEY_W])
 			pos += dir * (deltaTime * speed);
-	if (state[SDL_SCANCODE_D])
+	if (state[KEY_D])
 			pos += right * (deltaTime * speed);
-	if (state[SDL_SCANCODE_S])
+	if (state[KEY_S])
 			pos -= dir * (deltaTime * speed);
-	if (state[SDL_SCANCODE_A])
+	if (state[KEY_A])
 			pos -= right * (deltaTime * speed);
-	if (state[SDL_SCANCODE_E])
-			pos += up * (deltaTime * speed);
-	if (state[SDL_SCANCODE_Q])
-			pos -= up * (deltaTime * speed);
 
 	// Mouse
 	glm::vec3 horizontalDirection = glm::normalize(glm::vec3(dir.x, 0.0f, dir.z));

@@ -1,7 +1,12 @@
 #include <string>
 #include <cstring>
 #include <sstream>
-#include <netinet/in.h>
+
+#ifndef _WIN32
+	#include <netinet/in.h>
+#else
+	#include <winsock.h>
+#endif
 
 #include "texture.h"
 
@@ -25,10 +30,7 @@ void Texture::Init(std::string filename)
 	glBindTexture(GL_TEXTURE_2D, textureBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, FreeImage_GetWidth(image), FreeImage_GetHeight(image),
 		0, GL_BGRA, GL_UNSIGNED_BYTE, FreeImage_GetBits(image));
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	FreeImage_Unload(image);
-//	glGenerateMipmap(GL_TEXTURE_2D);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
@@ -63,6 +65,20 @@ void Texture::InitETC2(const char * filename)
 	glCompressedTexImage2D(GL_TEXTURE_2D, 0, GL_COMPRESSED_RGB8_ETC2, width, height, 0, skyboxSize, skyboxBuffer);
 	delete[] skyboxBuffer;
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+}
+
+void Texture::Enhance()
+{
+	glBindTexture(GL_TEXTURE_2D, textureBuffer);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//	if (SDL_GL_ExtensionSupported("GL_EXT_texture_filter_anisotropic")) {
+		float max_anisotropy;
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_anisotropy);
+		float amount = std::min(16.0f, max_anisotropy);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+//		printf("Anisotropic filtering supported: %f\n", max_anisotropy);
+//	}
+	glGenerateMipmap(GL_TEXTURE_2D);
 }
 
 void Texture::Bind(GLProgram * program, int location)

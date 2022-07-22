@@ -1,8 +1,12 @@
 #ifndef GL_SPHERE_H
 #define GL_SPHERE_H
 
-#define GL_GLEXT_PROTOTYPES
-#include <GL/gl.h>
+#ifndef _WIN32
+	#define GL_GLEXT_PROTOTYPES
+	#include <GL/gl.h>
+#else
+	#include <GL/glew.h>
+#endif // _WIN32
 
 #include "sphere.h"
 

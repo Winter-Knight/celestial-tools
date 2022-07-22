@@ -9,6 +9,7 @@ class Texture {
 public:
 	void Init(std::string filename);
 	void InitETC2(const char * filename);
+	void Enhance();
 	void Bind(GLProgram * program, int location);
 	
 	GLuint textureBuffer;

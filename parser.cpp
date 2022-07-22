@@ -189,6 +189,104 @@ Camera * getCameraFromFile(const char * filename)
 	return camera;
 }
 
+SkyArray * getSkyArrayFromFile(const char * filename)
+{
+	std::string line, fieldName;
+	std::stringstream ss;
+
+	SkyArray * skyArray = new SkyArray();
+	Sky * sky = NULL;
+	
+	bool hasColor = false;
+	bool hasTexture = false;
+	bool hasAngles = false;
+	std::string textureFilename;
+	glm::vec3 color;
+	std::vector<float> angles;
+
+	float fValue;
+	glm::vec3 floats;
+	std::string strValue;
+
+	// Open file
+	std::ifstream file(filename);
+	if (!file.is_open()) {
+		printf("File %s failed to open. Exiting parse function.\n", filename);
+		return NULL;
+	}
+	
+	while (!file.eof()) {
+		// Get line
+		getline(file, line);
+	
+		// If line is comment or empty then continue to next line
+		if (line.size() < 1 || line[0] == '#')
+			continue;
+
+		if (line == "[SkyPanorama]") {
+			sky = new SkyPanorama();
+			continue;
+		}
+		
+		else if (line == "[SkyColor]") {
+			sky = new SkyColor();
+			continue;
+		}
+
+		// New object that is not recognized by this function
+		else if (line[0] == '[') {
+			sky = NULL;
+			hasColor = hasTexture = hasAngles = false;
+		}
+
+		if (!sky)
+			continue;
+		
+		// Get next word from line, which represents name of field. If field is not reconized continue to next line
+		// Get next word from line, which represents value of field.
+		ss.clear();
+		ss.str(line);
+		ss >> fieldName;
+		if (fieldName == "Texture:") {
+			ss >> strValue;
+			sky->Init(strValue.c_str());
+			hasTexture = true;
+			
+			if (hasAngles)
+				for (unsigned int i = 0; i < angles.size(); i++)
+					skyArray->AddSky(sky, angles[i]);
+		}
+		if (fieldName == "Color:") {
+			ss >> floats[0] >> floats[1] >> floats[2];
+			sky->Init(floats);
+			hasColor = true;
+			
+			if (hasAngles)
+				for (unsigned int i = 0; i < angles.size(); i++)
+					skyArray->AddSky(sky, angles[i]);
+		}
+		else if (fieldName == "Angles:") {
+			while (!ss.eof()) {
+				ss >> fValue;
+				if (ss.fail())
+					break;
+				angles.push_back(fValue);
+				hasAngles = true;
+			}
+			
+			if (hasTexture || hasColor) {
+				for (unsigned int i = 0; i < angles.size(); i++)
+					skyArray->AddSky(sky, angles[i]);
+				angles.clear();
+				hasAngles = false;
+			}
+		}
+		
+	}
+	file.close();
+	return skyArray;
+}
+
 std::string getStarboxFromFile(const char * filename)
 {
 	std::string line, fieldName;

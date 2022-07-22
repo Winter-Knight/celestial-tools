@@ -1,7 +1,6 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
-#include "sdl/window.h"
 #include "camera.h"
 #include "glprogram.h"
 #include "texture.h"
@@ -12,7 +11,7 @@ public:
 	void Draw(const celestial::Camera & camera);
 	float getHeight(int x, int y);
 	float getHeight(glm::vec2 pos);
-	void setLight(glm::vec4 pos, glm::vec4 color) { lightPos = pos; lightColor = color; }
+	void setLight(glm::vec4 dir, glm::vec4 color) { lightDir = dir; lightColor = color; }
 
 	const static int terrainWidth = 512;
 
@@ -21,11 +20,12 @@ private:
 	GLuint vertexBuffer;
 	GLuint indexBuffer;
 	Texture rockyTexture;
+	Texture normalTexture;
 	GLProgram * program;
 
 	std::vector<glm::vec3> vertexdata;
 	
-	glm::vec4 lightPos;
+	glm::vec4 lightDir;
 	glm::vec4 lightColor;
 };
 

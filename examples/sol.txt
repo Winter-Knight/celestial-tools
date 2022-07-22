@@ -112,13 +112,15 @@ Shader: shaders/planet.frag
 Position: 0 600 0
 Direction: 0 -1 0
 Up: 0 0 -1
-#Position: 300 0 30
-#Direction: 0 0 -1
-#Up: 0 1 0
 FOV: 60
 Near: 0.1
 Far: 10000
 
 
-[Starbox]
+[SkyPanorama]
 Texture: images/starbox1_4k.png
+Angles: 195 345
+
+[SkyColor]
+Color: 0.1 0.65 1.0
+Angles: 15 165

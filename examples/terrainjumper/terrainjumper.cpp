@@ -3,10 +3,9 @@
 #include <glm/glm.hpp>
 #include <celestialworlds.hpp>
 
-#include "timefuncs.h"
+#include "compat.h"
 
-#include "sdl/window.h"
-#include "sdl/input.h"
+#include "timefuncs.h"
 
 #include "player.h"
 #include "terrain.h"
@@ -19,25 +18,36 @@ Terrain terrain;
 Window * window;
 InputHandler * input;
 
+long long t = 0;
+
 void draw()
 {
 	celestialWorld.setTime(nowMicro() * 600);
 
 	window->Clear();
 	celestialWorld.drawPerspective(player.getCamera());
+
 	glClear(GL_DEPTH_BUFFER_BIT);
+	glm::vec4 dir(0.0f);
+	glm::vec4 color(0.0f);
+	if (celestialWorld.getNumLights() > 0) {
+		dir = celestialWorld.getLightDir(0);
+		color = celestialWorld.getLightColor(0);
+	}
+	terrain.setLight(dir, color);
 	terrain.Draw(player.getCamera());
+
 	window->Swap();
 }
 
 void mainLoop()
 {
-	SDL_Event event;
+	Event event;
 	int quit = 0;
 	int deltaIndex = 0;
 	while (!input->quit) {
 		input->Reset();
-		while (SDL_PollEvent(&event)) {
+		while (PollEvent(&event)) {
 			input->HandleEvents(&event, window);
 			if (input->windowEvent) {
 				// CelestialWorlds needs to know about window resizing
@@ -49,6 +59,7 @@ void mainLoop()
 		player.updateCamera(delta);
 		player.maintainBounds();
 		player.handleJumps(delta);
+//		printf("camera dir: [%5.2f][%5.2f][%5.2f]\n", player.getCamera().dir.x, player.getCamera().dir.y, player.getCamera().dir.z);
 		draw();
 		
 /*		float deltas[10];
@@ -80,21 +91,19 @@ int main(int argc, char ** argv)
 	input = new InputHandler();
 
 	celestialWorld.Init();
-	celestialWorld.loadSystemFile(systemFile);
+	if (!(celestialWorld.loadSystemFile(systemFile))) {
+		delete window;
+		delete input;
+		return 1;
+	}
 	celestialWorld.setAspect(float(input->windowWidth) / float(input->windowHeight));
 	celestialWorld.putCameraOnBody(bodyFile);
 	
 	terrain.Init();
-	glm::vec4 pos(0.0f);
-	glm::vec4 color(0.0f);
-	if (celestialWorld.getNumLights() > 0) {
-		pos = celestialWorld.getLightPos(0);
-		color = celestialWorld.getLightColor(0);
-	}
-	terrain.setLight(pos, color);
 	
 	player.Init(&terrain, input);
 
+//	celestialWorld.setTime(100000000000000);
 	mainLoop();
 	return 0;
 }

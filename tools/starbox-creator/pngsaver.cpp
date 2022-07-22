@@ -7,6 +7,12 @@ void SaveToPNG(const char * filename, int numChannels, int bitDepth, int width, 
 {
 	int color_type;
 	switch(numChannels) {
+		case 1:
+			color_type = PNG_COLOR_TYPE_GRAY;
+			break;
+		case 2:
+			color_type = PNG_COLOR_TYPE_GRAY_ALPHA;
+			break;
 		case 3:
 			color_type = PNG_COLOR_TYPE_RGB;
 			break;
@@ -14,7 +20,7 @@ void SaveToPNG(const char * filename, int numChannels, int bitDepth, int width, 
 			color_type = PNG_COLOR_TYPE_RGBA;
 			break;
 		default:
-			printf("numChannels of %d not supported. Must be 3 or 4.\n", numChannels);
+			printf("numChannels of %d not supported. Must be 1-4.\n", numChannels);
 			return;
 	}
 
