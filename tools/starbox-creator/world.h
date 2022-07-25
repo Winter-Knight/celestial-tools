@@ -7,7 +7,7 @@
 #include "optionswindow.h"
 #include "framebuffer.h"
 #include "texturerect.h"
-#include "../twister-std.h"
+#include "twister-std.h"
 
 using namespace celestial;
 
