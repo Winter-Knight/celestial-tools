@@ -5,6 +5,4 @@
 *.0
 *.exe
 *.dll
-icon.r*
 imgui.ini
-images
