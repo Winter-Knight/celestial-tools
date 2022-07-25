@@ -19,7 +19,7 @@ indent_mode=2
 
 [project]
 name=Celestial
-base_path=/home/wk/cprog/celestial/
+base_path=/home/wk/cprog/celestial-tools/
 description=
 file_patterns=M*;*.cpp;*.h;*.vert;*.tcs;*.tes;*.frag;
 
@@ -28,20 +28,7 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=1
-FILE_NAME_0=256;C++;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fmain.cpp;0;3
-FILE_NAME_1=375;C;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fworld.h;0;3
-FILE_NAME_2=2672;C++;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fworld.cpp;0;3
-FILE_NAME_3=669;C;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fcelestial.h;0;3
-FILE_NAME_4=2868;C++;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fcelestial.cpp;0;3
-FILE_NAME_5=130;GLSL;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fshaders%2Fcelestial.vert;0;3
-FILE_NAME_6=305;GLSL;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fshaders%2Fcelestial.tes;0;3
-FILE_NAME_7=498;GLSL;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fshaders%2Fdaisy.frag;0;3
-FILE_NAME_8=0;C;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fskybox.h;0;3
-FILE_NAME_9=253;C++;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fskybox.cpp;0;3
-FILE_NAME_10=0;C;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Fcamera.h;0;3
-FILE_NAME_11=0;C;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Finput.h;0;3
-FILE_NAME_12=477;C++;0;EUTF-8;1;1;0;%2Fhome%2Fwk%2Fcprog%2Fcelestial%2Finput.cpp;0;3
+current_page=-1
 
 [prjorg]
 source_patterns=*.c;*.C;*.cpp;*.cxx;*.c++;*.cc;*.m;
