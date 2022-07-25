@@ -3,7 +3,7 @@
 
 #include <chrono>
 #include "input.h"
-#include "camera.h"
+#include "camera.hpp"
 #include "terrain.h"
 
 class Player {

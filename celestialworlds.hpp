@@ -5,7 +5,7 @@
 
 #include <glm/glm.hpp>
 
-#include "camera.h"
+#include "camera.hpp"
 
 class Celestial;
 class SkyArray;

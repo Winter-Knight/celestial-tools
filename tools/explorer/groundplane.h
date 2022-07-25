@@ -1,9 +1,9 @@
 #ifndef GROUNDPLANE_H
 #define GROUNDPLANE_H
 
-#include "camera.h"
+#include "camera.hpp"
 
-#include "glprogram.h"
+#include "resource-handler.h"
 
 class GroundPlane {
 public:

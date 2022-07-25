@@ -4,7 +4,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "camera.h"
+#include "camera.hpp"
 #include "texture.h"
 #include "glsphere.h"
 #include "glplane.h"

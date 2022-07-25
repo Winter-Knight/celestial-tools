@@ -10,6 +10,10 @@
 #include "player.h"
 #include "terrain.h"
 
+#ifndef DEFAULT_SYSTEM_FILE
+	#define DEFAULT_SYSTEM_FILE "../sol.txt"
+#endif
+
 celestial::World celestialWorld;
 
 Player player;
@@ -77,7 +81,7 @@ int main(int argc, char ** argv)
 {
 	const char * systemFile;
 	if (argc < 2)
-		systemFile = "../sol.txt";
+		systemFile = DEFAULT_SYSTEM_FILE;
 	else
 		systemFile = argv[1];
 	

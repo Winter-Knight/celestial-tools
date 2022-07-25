@@ -117,10 +117,10 @@ Near: 0.1
 Far: 10000
 
 
-[SkyPanorama]
+[BackgroundTexture]
 Texture: images/starbox1_4k.png
 Angles: 195 345
 
-[SkyColor]
+[BackgroundColor]
 Color: 0.1 0.65 1.0
 Angles: 15 165

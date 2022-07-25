@@ -2,7 +2,7 @@
 #define INPUT_H
 
 #include "window.h"
-#include "camera.h"
+#include "camera.hpp"
 
 class InputHandler {
 public:

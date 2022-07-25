@@ -10,18 +10,19 @@ LOCAL_HEADERS = $(shell ls *.h)
 LIBNAME = CelestialWorlds
 LIB = libCelestialWorlds.so
 DLL = $(LIBNAME).dll
+WINRES = ../../icon.res
 
 CXX = g++
 OPT = -O0 -g
-CXXFLAGS = -Wall -Wno-unused-variable $(OPT) -I$(ROOT_DIR) -I$(ROOT_DIR)/sdl -I. -I/usr/include/imgui -I/usr/include/libpng16
+CXXFLAGS = -Wall -Wno-unused-variable $(OPT) -I$(ROOT_DIR) -I$(ROOT_DIR)/sdl -I. -I/usr/include/imgui -I/usr/include/libpng16 $(ADD_CXXFLAGS)
 OBJECTS = $(patsubst %.cpp,%.o,$(SOURCE_FILES))
-LIBS = -lGL -lGLEW -lSDL2 -limgui -lstb -lpng16 -L$(ROOT_DIR) -l$(LIBNAME)
+LIBS = -lGL -lGLEW -lSDL2 -lfreeimage -limgui -lstb -lpng16 -L$(ROOT_DIR) -l$(LIBNAME)
 MAKE = make
 
 WIN_CXX = i686-w64-mingw32-g++
-WIN_CXXFLAGS = -Wall -Wno-unused-variable -Wno-comment $(OPT) -DSDL_MAIN_HANDLED -I$(HOME)/win32-depends/include -I$(HOME)/win32-depends/include/imgui -Iimguifilebrowser -I$(ROOT_DIR) -I$(ROOT_DIR)/sdl -I.
+WIN_CXXFLAGS = -Wall -Wno-unused-variable -Wno-comment $(OPT) -DSDL_MAIN_HANDLED -I$(HOME)/win32-depends/include -I$(HOME)/win32-depends/include/imgui -Iimguifilebrowser -I$(ROOT_DIR) -I$(ROOT_DIR)/sdl -I. $(ADD_CXXFLAGS)
 WIN_OBJECTS = $(patsubst %.cpp,%.obj,$(SOURCE_FILES))
-WIN_LIBS = -static-libstdc++ -static-libgcc -L$(HOME)/win32-depends/lib/ -lglew32 -lopengl32 -lSDL2 -lpng16 -lz -limgui -L $(ROOT_DIR) -lCelestialWorlds
+WIN_LIBS = -static-libstdc++ -static-libgcc -L$(HOME)/win32-depends/lib/ -lglew32 -lopengl32 -lSDL2 -lFreeImage -lpng16 -lz -limgui -L $(ROOT_DIR) -lCelestialWorlds
 
 $(BIN): $(OBJECTS) $(ROOT_DIR)/$(LIB) $(HEADERS) $(LOCAL_HEADERS)
 	$(CXX) -o $(BIN) $(OBJECTS) $(LIBS)
@@ -35,7 +36,7 @@ $(ROOT_DIR)/$(LIB): $(shell ls $(ROOT_DIR)/*.cpp) $(HEADERS)
 # By using -mwindows, you won't get a console popping up when you start your app from the
 # GUI, but you also won't get stdout or stderr when you start your app from the console
 $(BIN).exe: $(WIN_OBJECTS) $(ROOT_DIR)/$(DLL)
-	$(WIN_CXX) -o $@ $(WIN_OBJECTS) $(WIN_LIBS)
+	$(WIN_CXX) -o $@ $(WIN_OBJECTS) $(WINRES) $(WIN_LIBS)
 	chmod 644 $@
 
 %.obj: %.cpp $(HEADERS)

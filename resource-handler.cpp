@@ -3,6 +3,10 @@
 
 #include "resource-handler.h"
 
+#ifndef RESOURCE_BASE_DIR
+	#define RESOURCE_BASE_DIR ""
+#endif
+
 static std::map<std::string, Texture> textures;
 static std::map<std::string, GLShader *> shaders;
 static std::map<std::string, GLProgram *> programs;
@@ -53,38 +57,43 @@ GLProgram * getProgramInternal(const std::string key)
 		return NULL;
 }
 
-GLProgram * getProgram(const char * vertexshader, const char * fragmentshader)
+GLProgram * getProgram(const char * vs, const char * fs, bool useBaseDir)
 {
+	std::string vertexshader = RESOURCE_BASE_DIR;
+	vertexshader += vs;
+	std::string fragmentshader = RESOURCE_BASE_DIR;
+	if (useBaseDir)
+		fragmentshader += fs;
+	else
+		fragmentshader = fs;
+
 	std::stringstream key; key << vertexshader << "/" << fragmentshader;
 
 	GLProgram * program = getProgramInternal(key.str());
 	if (!program) {
-		program = new GLProgram(vertexshader, fragmentshader);
+		program = new GLProgram(vertexshader.c_str(), fragmentshader.c_str());
 		programs[key.str()] = program;
 	}
 	return program;
 }
 
-GLProgram * getProgram(const char * vertexshader, const char * geometryshader, const char * fragmentshader)
+GLProgram * getProgram(const char * vs, const char * gs, const char * fs, bool useBaseDir)
 {
+	std::string vertexshader = RESOURCE_BASE_DIR;
+	vertexshader += vs;
+	std::string geometryshader = RESOURCE_BASE_DIR;
+	geometryshader += gs;
+	std::string fragmentshader = RESOURCE_BASE_DIR;
+	if (useBaseDir)
+		fragmentshader += fs;
+	else
+		fragmentshader = fs;
+
 	std::stringstream key; key << vertexshader << "/" << geometryshader << "/" << fragmentshader;
 
 	GLProgram * program = getProgramInternal(key.str());
 	if (!program) {
-		program = new GLProgram(vertexshader, geometryshader, fragmentshader);
-		programs[key.str()] = program;
-	}
-	return program;
-}
-
-GLProgram * getProgram(const char * vertexshader, const char * tessCShader,
-	const char * tessEShader, const char * fragmentshader)
-{
-	std::stringstream key; key << vertexshader << "/" << tessCShader << "/" << tessEShader << "/" << fragmentshader;
-
-	GLProgram * program = getProgramInternal(key.str());
-	if (!program) {
-		program = new GLProgram(vertexshader, tessCShader, tessEShader, fragmentshader);
+		program = new GLProgram(vertexshader.c_str(), geometryshader.c_str(), fragmentshader.c_str());
 		programs[key.str()] = program;
 	}
 	return program;

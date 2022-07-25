@@ -5,7 +5,7 @@
 #include <map>
 #include <string>
 #include "celestial.h"
-#include "camera.h"
+#include "camera.hpp"
 #include "skypanorama.h"
 
 extern std::map<std::string, int> celestialIDMap;

@@ -1,11 +1,10 @@
 #version 330 core
 
-layout(location = 0) in highp vec4 vertex_attrib;
-layout(location = 4) in vec2 uv_in;
+layout(location = 0) in vec2 pos;
 
-out vec2 uv_interp;
+out vec2 uv;
 
 void main() {
-	uv_interp = vertex_attrib.xy;
-	gl_Position = vertex_attrib;
+	uv = pos;
+	gl_Position = vec4(pos, 1.0, 1.0);
 }

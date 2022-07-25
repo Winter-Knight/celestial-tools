@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 
 #include "window.h"
-#include "camera.h"
+#include "camera.hpp"
 
 class InputHandler {
 public:

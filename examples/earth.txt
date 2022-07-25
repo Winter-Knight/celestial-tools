@@ -26,5 +26,6 @@ FOV: 60
 Near: 0.01
 Far: 1000
 
-[Starbox]
+[BackgroundTexture]
 Texture: images/starbox1_4k.png
+Angles: 0

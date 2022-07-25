@@ -10,6 +10,10 @@
 
 #include "texture.h"
 
+#ifndef RESOURCE_BASE_DIR
+	#define RESOURCE_BASE_DIR ""
+#endif
+
 void Texture::Init(std::string filename)
 {
 	if (filename.length() > 4) {
@@ -88,4 +92,20 @@ void Texture::Bind(GLProgram * program, int location)
 	std::stringstream ss;
 	ss << "texture" << location;
 	program->SetUniformi(ss.str().c_str(), location);
+}
+
+std::string Texture::baseDir = RESOURCE_BASE_DIR;
+
+void Texture::assignBaseDir(const std::string & filename)
+{
+	unsigned int lastSlash = filename.find_last_of("/\\");
+	if (lastSlash != std::string::npos)
+		baseDir = filename.substr(0, lastSlash + 1);
+	else
+		baseDir = "";
+}
+
+void Texture::resetBaseDir()
+{
+	baseDir = RESOURCE_BASE_DIR;
 }

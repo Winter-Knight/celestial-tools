@@ -5,6 +5,10 @@
 #include "groundplane.h"
 #include "parser.h"
 
+#ifndef DEFAULT_SYSTEM_FILE
+	#define DEFAULT_SYSTEM_FILE "../../examples/sol.txt"
+#endif
+
 Window * window;
 InputHandler * input;
 World * world;
@@ -87,7 +91,7 @@ void play()
 int main(int argc, char ** argv)
 {
 	if (argc < 2)
-		systemFile = "flips.txt";
+		systemFile = DEFAULT_SYSTEM_FILE;
 	else
 		systemFile = argv[1];
 

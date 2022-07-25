@@ -33,13 +33,6 @@ void World::Init(const char * systemFile)
 		if (celestials[i]->light.r > 0.0f || celestials[i]->light.g > 0.0f || celestials[i]->light.b > 0.0f)
 			Celestial::lightArray.indexList.push_back(i);
 		
-
-	// Set up debugging:
-	
-	debugProgram = new GLProgram("shaders/celestialV.vert", "shaders/gas-debug.frag");
-	debugFramebuffer = new Framebuffer();
-	debugFramebuffer->Init(3, 3, GL_FLOAT, 2048, 2048);
-
 	glDisable(GL_CULL_FACE);
 }
 
@@ -57,8 +50,6 @@ void World::Update(long long time)
 		Celestial::lightArray.AddLight(glm::vec4(celestials[index]->pos, 0.0f), celestials[index]->light);
 	}
 }
-
-#include "../gl-debug.h"
 
 void World::DrawPerspective(int celestialID)
 {

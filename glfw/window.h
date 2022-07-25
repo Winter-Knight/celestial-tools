@@ -3,8 +3,9 @@
 
 // Debian ImGui needs glew
 #include <GL/glew.h>
-
 #include <GLFW/glfw3.h>
+
+#include "../texture.h"
 
 const unsigned int INITIAL_WINDOW_WIDTH = 1200;
 const unsigned int INITIAL_WINDOW_HEIGHT = 900;
@@ -21,6 +22,7 @@ public:
 
 	GLFWwindow * GetWindow() { return window; }
 	unsigned int GetWindowHeight() { glfwGetWindowSize(window, &width, &height); return height; }
+	void SetIcon(const char * filename);
 
 private:
 	void InitOpenGL();

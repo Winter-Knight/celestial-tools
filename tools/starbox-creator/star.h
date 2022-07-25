@@ -3,7 +3,7 @@
 
 #include <glm/glm.hpp>
 
-#include "camera.h"
+#include "camera.hpp"
 #include "sphere.h"
 
 #include "glprogram.h"

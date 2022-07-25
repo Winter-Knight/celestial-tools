@@ -2,6 +2,7 @@
 #include <sstream>
 
 #include "parser.h"
+#include "resource-handler.h"
 
 std::map<std::string, int> celestialIDMap;
 
@@ -24,6 +25,8 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		printf("Error: Failed to open solar system file: %s! Exiting parse function!\n", filename);
 		return;
 	}
+	
+	Texture::assignBaseDir(filename);
 
 	while (!file.eof()) {
 		// Get line
@@ -70,7 +73,7 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 		}
 		else if (fieldName == "Shader:") {
 			ss >> strValue;
-			celestial->program = new GLProgram(vertexshaderfile, strValue.c_str());
+			celestial->program = getProgram(vertexshaderfile, (Texture::baseDir + strValue).c_str(), false);
 		}
 		else if (fieldName == "Distance:") {
 			ss >> fValue;
@@ -119,6 +122,7 @@ void parseSystemFile(std::vector<Celestial *> & celestials, const char * filenam
 	}
 	
 	file.close();
+	Texture::resetBaseDir();
 }
 
 Camera * getCameraFromFile(const char * filename)
@@ -214,6 +218,8 @@ SkyArray * getSkyArrayFromFile(const char * filename)
 		printf("File %s failed to open. Exiting parse function.\n", filename);
 		return NULL;
 	}
+
+	Texture::assignBaseDir(filename);
 	
 	while (!file.eof()) {
 		// Get line
@@ -223,12 +229,12 @@ SkyArray * getSkyArrayFromFile(const char * filename)
 		if (line.size() < 1 || line[0] == '#')
 			continue;
 
-		if (line == "[SkyPanorama]") {
+		if (line == "[BackgroundTexture]") {
 			sky = new SkyPanorama();
 			continue;
 		}
 		
-		else if (line == "[SkyColor]") {
+		else if (line == "[BackgroundColor]") {
 			sky = new SkyColor();
 			continue;
 		}
@@ -284,6 +290,7 @@ SkyArray * getSkyArrayFromFile(const char * filename)
 		
 	}
 	file.close();
+	Texture::resetBaseDir();
 	return skyArray;
 }
 
@@ -309,7 +316,7 @@ std::string getStarboxFromFile(const char * filename)
 		if (line.size() < 1 || line[0] == '#')
 			continue;
 
-		if (line == "[Starbox]") {
+		if (line == "[BackgroundTexture]") {
 			foundStarbox = true;
 			continue;
 		}

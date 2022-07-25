@@ -5,7 +5,7 @@
 
 #include "texture.h"
 #include "glprogram.h"
-#include "camera.h"
+#include "camera.hpp"
 
 class Sky {
 public:

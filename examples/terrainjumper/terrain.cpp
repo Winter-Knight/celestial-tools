@@ -5,8 +5,13 @@
 #include "resource-handler.h"
 #include "texture.h"
 
-const char * heightTextureFilename = "images/terrainheightmap.png";
-const char * normalTextureFilename = "images/terrainnormalmap.png";
+#ifndef RESOURCE_BASE_DIR
+	#define RESOURCE_BASE_DIR ""
+#endif
+
+const char * heightTextureFilename = RESOURCE_BASE_DIR "images/terrainheightmap.png";
+const char * normalTextureFilename = RESOURCE_BASE_DIR "images/terrainnormalmap.png";
+const char * rockyTextureFilename = RESOURCE_BASE_DIR "images/rock_04_diff_2k.jpg";
 
 const float HEIGHT_MULTIPLIER = 400.0f;
 
@@ -124,7 +129,7 @@ void Terrain::Init()
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexdata.size() * sizeof(unsigned int), indexdata.data(), GL_STATIC_DRAW);
 
 	// Texture
-	rockyTexture = getTexture("images/rock_04_diff_2k.jpg");
+	rockyTexture = getTexture(rockyTextureFilename);
 	rockyTexture.Enhance();
 
 	normalTexture = getTexture(normalTextureFilename);

@@ -62,5 +62,6 @@ Near: 0.001
 Far: 10000
 
 
-[Starbox]
+[BackgroundTexture]
 Texture: images/starbox1_4k.png
+Angles: 0

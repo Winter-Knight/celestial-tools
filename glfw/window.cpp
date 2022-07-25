@@ -3,6 +3,25 @@
 
 #include "window.h"
 
+void Window::SetIcon(const char * filename)
+{
+	FIBITMAP * icondata = LoadImage(filename);
+	GLFWimage image;
+	image.width = image.height = 64;
+	image.pixels = (unsigned char *) FreeImage_GetBits(icondata);
+	
+	for (unsigned int i = 0; i < 64 * 64; i++) {
+		unsigned int blue = ((unsigned int *) image.pixels)[i] & 0xff;
+		unsigned int green = (((unsigned int *) image.pixels)[i] & 0xff00) >> 8;
+		unsigned int red = (((unsigned int *) image.pixels)[i] & 0xff0000) >> 16;
+		unsigned int alpha = 0xff;
+		((unsigned int *) image.pixels)[i] = (alpha << 24) | (blue << 16) | (green << 8) | (red);
+	}
+
+	glfwSetWindowIcon(window, 1, &image);
+	FreeImage_Unload(icondata);
+}
+
 Window::Window()
 {
 	width = INITIAL_WINDOW_WIDTH;
@@ -29,6 +48,7 @@ Window::Window()
 	glfwSetWindowPos(window, x, y);
 
 	glfwShowWindow(window);
+	SetIcon("images/program_icon.png");
 	
 	glfwMakeContextCurrent(window);
 	glfwSwapInterval(1);

@@ -1,8 +1,32 @@
+/*************************************************************************/
+/* Copyright (c) 2022 Brandon Barnes <winterknight@email.com>            */
+/* Copyright (c) 2007-2020 Juan Linietsky, Ariel Manzur.                 */
+/* Copyright (c) 2014-2020 Godot Engine contributors (cf. AUTHORS.md).   */
+/*                                                                       */
+/* Permission is hereby granted, free of charge, to any person obtaining */
+/* a copy of this software and associated documentation files (the       */
+/* "Software"), to deal in the Software without restriction, including   */
+/* without limitation the rights to use, copy, modify, merge, publish,   */
+/* distribute, sublicense, and/or sell copies of the Software, and to    */
+/* permit persons to whom the Software is furnished to do so, subject to */
+/* the following conditions:                                             */
+/*                                                                       */
+/* The above copyright notice and this permission notice shall be        */
+/* included in all copies or substantial portions of the Software.       */
+/*                                                                       */
+/* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,       */
+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF    */
+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.*/
+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY  */
+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,  */
+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE     */
+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                */
+/*************************************************************************/
+
+
 #include <glm/glm.hpp>
 
-#include "sdl/window.h"
-
-#include "camera.h"
+#include "camera.hpp"
 #include "skypanorama.h"
 #include "resource-handler.h"
 
@@ -23,22 +47,16 @@ void SkyPanorama::Init(const char * filename)
 
 	// Vertex Buffers
 
-	glm::vec3 vertices[] = { glm::vec3(-1.0f, -1.0f, 1.0f),
-	                         glm::vec3( 0.0f,  1.0f, 0.0f),
-	                         glm::vec3( 1.0f, -1.0f, 1.0f),
-	                         glm::vec3( 1.0f,  1.0f, 0.0f),
-	                         glm::vec3( 1.0f,  1.0f, 1.0f),
-	                         glm::vec3( 1.0f,  0.0f, 0.0f),
-	                         glm::vec3(-1.0f,  1.0f, 1.0f),
-	                         glm::vec3( 0.0f,  0.0f, 0.0f) };
-
+	float vertices[] = { -1.0f, -1.0f,
+	                      1.0f, -1.0f,
+	                      1.0f,  1.0f,
+	                     -1.0f,  1.0f };
+	
 	glGenBuffers(1, &vertexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3) * 2, (void *) 0);
-	glEnableVertexAttribArray(4);
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3) * 2, (void *) sizeof(glm::vec3));
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void *) 0);
 
 	// Texture
 	

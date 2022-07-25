@@ -13,24 +13,40 @@ public:
 	void Bind(GLProgram * program, int location);
 	
 	GLuint textureBuffer;
+
+	static std::string baseDir;
+	static void resetBaseDir();
+	static void assignBaseDir(const std::string & filename);
+
+//	baseDir: Assigned by location of system file
+//	baseDir: Current directory "./"
+//	baseDir: On linux: /usr/share/celestialworlds/
 };
 
-inline FIBITMAP * LoadImage(const char * filename)
+inline FIBITMAP * LoadImage(const char * theFilename)
 {
 	FIBITMAP * tmpImage, * image;
 
-	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(filename);
-	tmpImage = FreeImage_Load(fif, filename, 0);
+	std::string filename;
+	if (theFilename[0] != '/')
+		// Relative path
+		filename = Texture::baseDir + theFilename;
+	else
+		// Absolute path, don't modify
+		filename = theFilename;
+	
+	FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(filename.c_str());
+	tmpImage = FreeImage_Load(fif, filename.c_str(), 0);
 	
 	if (!tmpImage) {
-		printf("Error: Image not found: %s!\n", filename);
+		printf("Error: Image not found: %s!\n", filename.c_str());
 		return NULL;
 	}
 	
 	FREE_IMAGE_TYPE imageType = FreeImage_GetImageType(tmpImage);
-	printf("image filename: %s     fif: %d     format: %d\n", filename, fif, imageType);
+	printf("image filename: %s     fif: %d     format: %d\n", filename.c_str(), fif, imageType);
 	if (imageType != FIT_BITMAP)
-		printf("WARNING: Image type for %s may not be supported. Image type: %d\n", filename, imageType);
+		printf("WARNING: Image type for %s may not be supported. Image type: %d\n", filename.c_str(), imageType);
 
 	if (FreeImage_GetBPP(tmpImage) == 32)
 		image = tmpImage;

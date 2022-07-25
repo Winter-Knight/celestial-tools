@@ -3,6 +3,16 @@
 
 #include "window.h"
 
+void Window::SetIcon(const char * filename)
+{
+	FIBITMAP * icondata = LoadImage(filename);
+	SDL_Surface * iconsurface = SDL_CreateRGBSurfaceFrom(FreeImage_GetBits(icondata), 64, 64, 32, 64 * 4, 0xff0000, 0xff00, 0xff, 0xff000000);
+
+	SDL_SetWindowIcon(window, iconsurface);
+	SDL_FreeSurface(iconsurface);
+	FreeImage_Unload(icondata);
+}
+
 Window::Window()
 {
 	width = INITIAL_WINDOW_WIDTH;
@@ -22,6 +32,7 @@ Window::Window()
 	window = SDL_CreateWindow("Solar System", SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED, width, height,
 		SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+	SetIcon("images/program_icon.png");
 	context = SDL_GL_CreateContext(window);
 	SDL_GL_SetSwapInterval(1);
 

@@ -17,7 +17,7 @@ void GroundPlane::Init()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, (void *) 0);
 	
-	program = new GLProgram("shaders/groundplane.vert", "shaders/groundplane.frag");
+	program = getProgram("shaders/groundplane.vert", "shaders/groundplane.frag");
 	
 	camera.pos = glm::vec3(0.0f, 0.0f, 2.0f);
 	

@@ -10,9 +10,7 @@ Texture getTexture(const std::string & filename);
 
 GLShader * getShader(const std::string filename, GLenum shaderType);
 
-GLProgram * getProgram(const char * vertexshader, const char * fragmentshader);
-GLProgram * getProgram(const char * vertexshader, const char * geometryshader, const char * fragmentshader);
-GLProgram * getProgram(const char * vertexshader, const char * tessCShader,
-	const char * tessEShader, const char * fragmentshader);
+GLProgram * getProgram(const char * vertexshader, const char * fragmentshader, bool useBaseDir = true);
+GLProgram * getProgram(const char * vertexshader, const char * geometryshader, const char * fragmentshader, bool useBaseDir = true);
 
 #endif // RESOURCE_HANDLER_H

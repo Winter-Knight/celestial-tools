@@ -1,7 +1,7 @@
 #ifndef TERRAIN_H
 #define TERRAIN_H
 
-#include "camera.h"
+#include "camera.hpp"
 #include "glprogram.h"
 #include "texture.h"
 

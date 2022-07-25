@@ -2,7 +2,7 @@
 #define WORLD_H
 
 #include "window.h"
-#include "camera.h"
+#include "camera.hpp"
 #include "skypanorama.h"
 #include "input.h"
 #include "celestial.h"
