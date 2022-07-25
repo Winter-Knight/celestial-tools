@@ -1,0 +1,15 @@
+https://www.solarsystemscope.com/textures/download/2k_mercury.jpg
+https://www.solarsystemscope.com/textures/download/2k_venus_surface.jpg
+https://www.solarsystemscope.com/textures/download/2k_venus_atmosphere.jpg
+https://www.solarsystemscope.com/textures/download/2k_earth_daymap.jpg
+https://www.solarsystemscope.com/textures/download/2k_earth_normal_map.tif
+https://www.solarsystemscope.com/textures/download/2k_earth_specular_map.tif
+https://www.solarsystemscope.com/textures/download/2k_mars.jpg
+https://www.solarsystemscope.com/textures/download/2k_jupiter.jpg
+https://www.solarsystemscope.com/textures/download/2k_saturn.jpg
+https://www.solarsystemscope.com/textures/download/2k_uranus.jpg
+https://www.solarsystemscope.com/textures/download/2k_neptune.jpg
+
+https://www.solarsystemscope.com/textures/download/2k_stars.jpg
+https://www.solarsystemscope.com/textures/download/2k_stars_milky_way.jpg
+https://www.solarsystemscope.com/textures/download/2k_sun.jpg

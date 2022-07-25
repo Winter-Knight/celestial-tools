@@ -1,0 +1,2 @@
+Uranus is: vec3(0, 0.53, 0.84)
+Jupiter: I'd like to use the instructions from that one project instead of this texture.

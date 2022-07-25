@@ -1,0 +1,30 @@
+?package(celestial-tools-bin): \
+	needs="X11" \
+	section="Games/Tools" \
+	title="Terrain Jumper" \
+	longtitle="Celestial Tools - Terrain Jumper (SDL2)" \
+	command="/usr/games/terrainjumper" \
+	icon="/usr/share/pixmaps/celestial-tools-bin.xpm"
+
+?package(celestial-tools-bin): \
+	needs="X11" \
+	section="Games/Tools" \
+	title="Terrain Jumper" \
+	longtitle="Celestial Tools - Terrain Jumper (GLFW)" \
+	command="/usr/games/terrainjumper-glfw" \
+	icon="/usr/share/pixmaps/celestial-tools-bin.xpm"
+
+?package(celestial-tools-bin): \
+	needs="X11" \
+	section="Games/Tools" \
+	title="Celestial Explorer" \
+	command="/usr/bin/celestial-explorer" \
+	icon="/usr/share/pixmaps/celestial-tools-bin.xpm"
+
+?package(celestial-tools-bin): \
+	needs="X11" \
+	section="Games/Tools" \
+	title="Starbox Creator" \
+	longtitle="Celestial Tools - Starbox Creator" \
+	command="/usr/games/terrainjumper-glfw" \
+	icon="/usr/share/pixmaps/celestial-tools-bin.xpm"
