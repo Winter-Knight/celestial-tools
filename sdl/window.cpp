@@ -6,6 +6,7 @@
 void Window::SetIcon(const char * filename)
 {
 	FIBITMAP * icondata = LoadImage(filename);
+	FreeImage_FlipVertical(icondata);
 	SDL_Surface * iconsurface = SDL_CreateRGBSurfaceFrom(FreeImage_GetBits(icondata), 64, 64, 32, 64 * 4, 0xff0000, 0xff00, 0xff, 0xff000000);
 
 	SDL_SetWindowIcon(window, iconsurface);

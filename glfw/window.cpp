@@ -6,6 +6,8 @@
 void Window::SetIcon(const char * filename)
 {
 	FIBITMAP * icondata = LoadImage(filename);
+	FreeImage_FlipVertical(icondata);
+
 	GLFWimage image;
 	image.width = image.height = 64;
 	image.pixels = (unsigned char *) FreeImage_GetBits(icondata);
