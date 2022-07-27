@@ -9,10 +9,13 @@ void InputHandler::keyCallback(GLFWwindow * window, int key, int scancode, int a
 	if (key == GLFW_REPEAT)
 		return;
 
-	if (action == GLFW_PRESS)
-		lastKey = key;
-
 	keyStates[key] = action;
+
+	if (action == GLFW_RELEASE)
+		return;
+
+	lastKey = key;
+	buttonMask = mods;
 
 	switch(key) {
 		case GLFW_KEY_ESCAPE:
@@ -21,8 +24,20 @@ void InputHandler::keyCallback(GLFWwindow * window, int key, int scancode, int a
 		case GLFW_KEY_SPACE:
 			paused = !paused;
 			break;
+		case GLFW_KEY_F8:
+			if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED)
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			else
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			break;
+		case GLFW_KEY_F11:
+			int maximized = glfwGetWindowAttrib(window, GLFW_MAXIMIZED);
+			if (maximized)
+				glfwRestoreWindow(window);
+			else
+				glfwMaximizeWindow(window);
+			break;
 	}
-	buttonMask = mods;
 }
 
 void InputHandler::mouseMotionCallback(GLFWwindow * window, double x, double y)
@@ -30,8 +45,10 @@ void InputHandler::mouseMotionCallback(GLFWwindow * window, double x, double y)
 	xpos = x;
 	ypos = y;
 
-	xrel = xpos - centerPosX;
-	yrel = ypos - centerPosY;
+	if (glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
+		xrel = xpos - centerPosX;
+		yrel = ypos - centerPosY;
+	}
 }
 
 void InputHandler::mouseButtonCallback(GLFWwindow * window, int b, int action, int mods)
@@ -73,7 +90,7 @@ void InputHandler::Reset()
 {
 	static int firstTime = true;
 	
-	if (!firstTime) {
+	if (!firstTime && glfwGetInputMode(window, GLFW_CURSOR) == GLFW_CURSOR_DISABLED) {
 		glfwSetCursorPos(window, centerPosX, centerPosY);
 	}
 	firstTime = false;

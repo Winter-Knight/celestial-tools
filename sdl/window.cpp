@@ -22,7 +22,7 @@ Window::Window()
 
 	SDL_Init(SDL_INIT_VIDEO);
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
@@ -63,7 +63,6 @@ Window::Window()
 	CheckSDLError("Window()");
 
 	InitOpenGL();
-
 }
 
 void Window::InitOpenGL()
@@ -75,10 +74,6 @@ void Window::InitOpenGL()
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPatchParameteri(GL_PATCH_VERTICES, 1);
-	float sphereDetails[] = { SPHERE_DETAILS, SPHERE_DETAILS, SPHERE_DETAILS, SPHERE_DETAILS };
-	glPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL, sphereDetails);
-	glPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL, sphereDetails);
 
 	CheckGLError("Window()");
 }

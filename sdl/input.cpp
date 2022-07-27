@@ -47,10 +47,28 @@ int InputHandler::HandleEvents(SDL_Event * event, Window * window)
 void InputHandler::Keyboard(SDL_Event * event)
 {
 	lastKey = event->key.keysym.sym;
-	if (lastKey == SDLK_ESCAPE)
-		quit = 1;
-	if (lastKey == SDLK_SPACE)
-		paused = !paused;
+	switch (lastKey) {
+		case SDLK_ESCAPE:
+			quit = 1;
+			break;
+		case SDLK_SPACE:
+			paused = !paused;
+			break;
+		case SDLK_F8:
+			if (SDL_GetRelativeMouseMode())
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+			else
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+			break;
+		case SDLK_F11: // Workaround for SDL bug
+			SDL_Window * window = SDL_GetWindowFromID(event->key.windowID);
+			unsigned int flags = SDL_GetWindowFlags(window);
+			if (flags & SDL_WINDOW_MAXIMIZED)
+				SDL_RestoreWindow(window);
+			else
+				SDL_MaximizeWindow(window);
+			break;
+	}
 }
 
 void InputHandler::MouseMove(SDL_Event * event, Window * window)

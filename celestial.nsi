@@ -8,7 +8,7 @@
 !define ROOTKEY "HKCU"
 !define PRODUCT_VERSION "0.1"
 
-!define DEPENDS_PATH "/home/wk/win32-depends/lib/"
+!define DEPENDS_PATH "${HOME}/win32-depends/lib/"
 !define BIN_PATH "/tmp/celestial-tools-win32-${PRODUCT_VERSION}/"
 !define TERRAINJUMPER_EXE "terrainjumper.exe"
 !define TERRAINJUMPER_GLFW_EXE "terrainjumper-glfw.exe"

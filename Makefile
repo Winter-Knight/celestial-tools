@@ -71,6 +71,7 @@ clean:
 win-clean:
 	-rm $(DLL)
 	-rm $(WIN_OBJECTS)
+	-rm *.exe
 
 clean-all: clean win-clean
 	cd examples/terrainjumper && make clean-all

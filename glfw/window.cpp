@@ -31,10 +31,10 @@ Window::Window()
 
 	glfwInit();
 	
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	
+
 	glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
 	glfwWindowHint(GLFW_SAMPLES, 4);
 	
@@ -87,10 +87,6 @@ void Window::InitOpenGL()
 	glDepthFunc(GL_LEQUAL);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glPatchParameteri(GL_PATCH_VERTICES, 1);
-	float sphereDetails[] = { SPHERE_DETAILS, SPHERE_DETAILS, SPHERE_DETAILS, SPHERE_DETAILS };
-	glPatchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL, sphereDetails);
-	glPatchParameterfv(GL_PATCH_DEFAULT_OUTER_LEVEL, sphereDetails);
 
 	CheckGLError("Window()");
 }

@@ -7,8 +7,7 @@
 
 #include "optionswindow.h"
 
-// TODO: Should determine home directory another way
-const char * optionsFile = "/home/wk/.starbox-creator-options";
+const char * optionsFile = ".starbox-creator-options";
 
 void OptionsWindow::Init(SDL_Window * w, SDL_GLContext * context)
 {
@@ -98,7 +97,9 @@ void OptionsWindow::Load()
 	unsigned int uValue;
 
 	// Open file
-	std::ifstream file(optionsFile);
+	char * optionsPath = SDL_GetPrefPath("", "starbox-creator");
+	std::ifstream file((std::string(optionsPath) + optionsFile).c_str());
+	SDL_free(optionsPath);
 	if (!file.is_open()) {
 		return;
 	}
@@ -189,7 +190,9 @@ const char * OptionsWindow::GetSaveText()
 
 void OptionsWindow::Save()
 {
-	FILE * fp = fopen(optionsFile, "w");
+	char * optionsPath = SDL_GetPrefPath("", "starbox-creator");
+	FILE * fp = fopen((std::string(optionsPath) + optionsFile).c_str(), "w");
+	SDL_free(optionsPath);
 	
 	if (!fp) {
 		printf("ERROR! CANNOT OPEN OPTIONS FILE FOR WRITING: %s\n", optionsFile);

@@ -162,13 +162,13 @@ void World::Play()
 			}
 		}
 		
-		if (input->lastKey == SDLK_F8) {
+/*		if (input->lastKey == SDLK_F8) {
 			if (SDL_GetRelativeMouseMode())
 				SDL_SetRelativeMouseMode(SDL_FALSE);
 			else
 				SDL_SetRelativeMouseMode(SDL_TRUE);
 		}
-		
+*/
 		if (SDL_GetRelativeMouseMode())
 			input->UpdateCamera(camera);
 
